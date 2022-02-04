@@ -28,6 +28,9 @@ DECLARE_CLASS_CODEGEN(SliceDetails, HoverClickHelper, UnityEngine::MonoBehaviour
     DECLARE_INSTANCE_FIELD(bool, notClickedModal);
     DECLARE_INSTANCE_FIELD(bool, outOfRange);
     DECLARE_INSTANCE_FIELD(bool, grabbingHandle);
+    DECLARE_INSTANCE_FIELD(bool, hoveringHandle);
+    DECLARE_INSTANCE_FIELD(UnityEngine::Material*, origHandleMat);
+    DECLARE_INSTANCE_FIELD(UnityEngine::Material*, hoverHandleMat);
     DECLARE_INSTANCE_FIELD(UnityEngine::Transform*, currentCollider);
 
 

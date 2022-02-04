@@ -6,6 +6,7 @@
 #include "HMUI/ModalView.hpp"
 #include "Data/GridInfo.hpp"
 #include "UnityEngine/Material.hpp"
+#include "UIUtils.hpp"
 // beatsaber-hook is a modding framework that lets us call functions and fetch field values from in the game
 // It also allows creating objects, configuration, and importantly, hooking methods to modify their values
 #include "beatsaber-hook/shared/utils/logging.hpp"
@@ -18,9 +19,7 @@ namespace SliceDetails{
             static Config config;
             static bool configValid;
             static void loadConfig();
-            static HMUI::ModalView* modal;
-            static GridInfo* gridNotes[12];
-            static void updateModalNotes(int index);
+            static SliceDetails::SliceDetailsUI* SliceDetailsUI;
             static bool isPaused;
             static UnityEngine::Material* UINoGlow;
     };

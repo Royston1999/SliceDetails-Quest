@@ -10,6 +10,7 @@
 #include "HMUI/ModalView.hpp"
 #include "VRUIControls/VRPointer.hpp"
 #include "UnityEngine/Space.hpp"
+#include "main.hpp"
 
 DEFINE_TYPE(SliceDetails, ModalHelper);
 
@@ -28,12 +29,12 @@ void SliceDetails::ModalHelper::Update(){
         if(to_utf8(csstrtostr(hit.get_collider()->get_name())).compare("modalcollider") == 0){
             if (!isHit){
                 hint = hit.get_collider()->get_transform()->get_parent()->GetComponentInChildren<HMUI::HoverHint*>();
-                if (SliceDetails::Main::modal->isShown){
+                if (SliceDetails::Main::SliceDetailsUI->modal->isShown){
                     isHit = true;
                     hintController->SetupAndShowHintPanel(hint);
                     hint->set_enabled(true);
                     hint->get_gameObject()->set_active(true);
-                    hintController->hoverHintPanel->get_transform()->SetParent(SliceDetails::Main::modal->get_transform(), false);
+                    hintController->hoverHintPanel->get_transform()->SetParent(SliceDetails::Main::SliceDetailsUI->modal->get_transform(), false);
                     hintController->hoverHintPanel->get_transform()->set_localScale({0.6f, 0.6f, 0.0f});
                     hintController->hoverHintPanel->get_transform()->set_position(hint->get_transform()->get_position());
                     hintController->hoverHintPanel->get_transform()->Translate({0.0f, 0.21f, 0.0f}, UnityEngine::Space::Self);

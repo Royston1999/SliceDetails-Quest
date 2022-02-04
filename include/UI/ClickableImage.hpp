@@ -31,7 +31,6 @@
 #include "HMUI/HoverHintPanel.hpp"
 #include "UnityEngine/RaycastHit.hpp"
 #include "UnityEngine/Physics.hpp"
-#include "main.hpp"
 
 DECLARE_CLASS_CODEGEN(SliceDetails, ClickableImage, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_METHOD(void, Awake);

@@ -1,4 +1,5 @@
 #include "UI/ClickableImage.hpp"
+#include "main.hpp"
 
 DEFINE_TYPE(SliceDetails, ClickableImage);
 void SliceDetails::ClickableImage::Awake(){
