@@ -1,4 +1,4 @@
-#include "UIUtils.hpp"
+#include "SliceDetailsUI.hpp"
 #include "main.hpp"
 
 using namespace UnityEngine::UI;
@@ -136,7 +136,7 @@ namespace SliceDetails{
     {
         for (int i=0; i<12; i++){
             auto* layout = i<4 ? line1 : i<8 ? line2 : i<12 ? line3 : nullptr;
-            panelImages[i] = SliceDetails::CreateClickableImage(layout->get_transform(), "bloq", QuestUI::BeatSaberUI::Base64ToSprite(SliceDetails::Sprites::bloq), "115", i);
+            panelImages[i] = SliceDetails::CreateClickableImage(layout->get_transform(), "bloq", QuestUI::BeatSaberUI::Base64ToSprite(SliceDetails::Sprites::bloq_gradient), "115", i);
             co_yield nullptr;
         }
         co_return;

@@ -10,7 +10,7 @@
 #include "HMUI/ModalView.hpp"
 #include "VRUIControls/VRPointer.hpp"
 #include "UnityEngine/Shader.hpp"
-#include "UIUtils.hpp"
+#include "SliceDetailsUI.hpp"
 #include "UnityEngine/Space.hpp"
 #include "main.hpp"
 
