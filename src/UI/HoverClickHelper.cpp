@@ -9,7 +9,10 @@
 #include "questui/shared/CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "HMUI/ModalView.hpp"
 #include "VRUIControls/VRPointer.hpp"
+#include "UnityEngine/Shader.hpp"
+#include "UIUtils.hpp"
 #include "UnityEngine/Space.hpp"
+#include "main.hpp"
 
 DEFINE_TYPE(SliceDetails, HoverClickHelper);
 
@@ -21,11 +24,14 @@ void SliceDetails::HoverClickHelper::Awake(){
     outOfRange = false;
     currentCollider = nullptr;
     grabbingHandle = false;
+    hoveringHandle = false;
+    hoverHandleMat = UnityEngine::Material::New_ctor(UnityEngine::Shader::Find(il2cpp_utils::newcsstr("Hidden/Internal-DepthNormalsTexture")));
 }
 
 void SliceDetails::HoverClickHelper::Init(VRUIControls::VRPointer* pointer, UnityEngine::GameObject* handle){
     vrPointer = pointer;
     handleTransform = handle;
+    origHandleMat = handle->GetComponent<UnityEngine::MeshRenderer*>()->get_material();
 }
 
 void SliceDetails::HoverClickHelper::Update(){
@@ -40,7 +46,7 @@ void SliceDetails::HoverClickHelper::Update(){
             if (!isHit){
                 clickimg = hit.get_collider()->get_transform()->get_parent()->GetComponent<SliceDetails::ClickableImage*>();
                 currentCollider = hit.get_collider()->get_transform();
-                if (!SliceDetails::Main::modal->isShown && Main::gridNotes[clickimg->index]->cutCount != 0){
+                if (!SliceDetails::Main::SliceDetailsUI->modal->isShown && SliceDetails::Main::SliceDetailsUI->gridNotes[clickimg->index]->cutCount != 0){
                     isHit = true;
                     clickimg->image->GetComponent<UnityEngine::UI::Image*>()->set_color(UnityEngine::Color(0.70f, 0.70f, 0.70f, 1.0f));
                     hintController->SetupAndShowHintPanel(clickimg->theHint);
@@ -53,26 +59,41 @@ void SliceDetails::HoverClickHelper::Update(){
                 else clickimg = nullptr;
             }
         }
-        else if (isHit && !SliceDetails::Main::modal->isShown){
+        else if (isHit && !SliceDetails::Main::SliceDetailsUI->modal->isShown){
             clickimg->image->GetComponent<UnityEngine::UI::Image*>()->set_color(UnityEngine::Color::get_gray());
             hintController->hoverHintPanel->Hide();
             clickimg = nullptr;
             isHit = false;
         }
+        if(hit.get_collider()->get_transform() == handleTransform->get_transform()){
+            if(!hoveringHandle){
+                hoveringHandle = true;
+                handleTransform->GetComponent<UnityEngine::MeshRenderer*>()->set_material(hoverHandleMat);
+            }
+        }
+        else if(hoveringHandle && !grabbingHandle){
+            hoveringHandle = false;
+            handleTransform->GetComponent<UnityEngine::MeshRenderer*>()->set_material(origHandleMat);
+        }
     }
-    else if (isHit && !SliceDetails::Main::modal->isShown){
-        clickimg->image->GetComponent<UnityEngine::UI::Image*>()->set_color(UnityEngine::Color::get_gray());
-        hintController->hoverHintPanel->Hide();
-        clickimg = nullptr;
-        isHit = false;
+    else {
+        if (isHit && !SliceDetails::Main::SliceDetailsUI->modal->isShown){
+            clickimg->image->GetComponent<UnityEngine::UI::Image*>()->set_color(UnityEngine::Color::get_gray());
+            hintController->hoverHintPanel->Hide();
+            clickimg = nullptr;
+            isHit = false;
+        }
+        if(hoveringHandle && !grabbingHandle){
+            hoveringHandle = false;
+            handleTransform->GetComponent<UnityEngine::MeshRenderer*>()->set_material(origHandleMat);        }
     }
-    if (isHit && grabbingController && notClickedModal && !justClosedModal && !outOfRange && !SliceDetails::Main::modal->isShown && Main::gridNotes[clickimg->index]->cutCount != 0){
+    if (isHit && grabbingController && notClickedModal && !justClosedModal && !outOfRange && !SliceDetails::Main::SliceDetailsUI->modal->isShown && SliceDetails::Main::SliceDetailsUI->gridNotes[clickimg->index]->cutCount != 0){
         SliceDetails::HoverClickHelper::grabbingController = vrPointer->get_vrController();
         SliceDetails::HoverClickHelper::triggerPressed = true;
         notClickedModal = false;
         clickimg->image->GetComponent<UnityEngine::UI::Image*>()->set_color(UnityEngine::Color::get_gray());
-        SliceDetails::Main::updateModalNotes(clickimg->index);
-        SliceDetails::Main::modal->Show(true, true, nullptr);
+        SliceDetails::Main::SliceDetailsUI->updateGridNotesInfo(clickimg->index);
+        SliceDetails::Main::SliceDetailsUI->modal->Show(true, true, nullptr);
         hintController->hoverHintPanel->Hide();
         clickimg = nullptr;
         isHit = false;
@@ -83,15 +104,18 @@ void SliceDetails::HoverClickHelper::Update(){
 }
 
 void SliceDetails::HoverClickHelper::LateUpdate(){
-    if(!SliceDetails::HoverClickHelper::triggerPressed && !isHit && vrPointer->get_vrController()->get_triggerValue() > 0.9f && SliceDetails::Main::modal->isShown &&  ((hit.get_collider() && hit.get_collider()->get_transform() != handleTransform->get_transform()) || !hit.get_collider())){
-        SliceDetails::Main::modal->Hide(true, nullptr);
+    if(!SliceDetails::HoverClickHelper::triggerPressed && !isHit && vrPointer->get_vrController()->get_triggerValue() > 0.9f && SliceDetails::Main::SliceDetailsUI->modal->isShown &&  ((hit.get_collider() && hit.get_collider()->get_transform() != handleTransform->get_transform()) || !hit.get_collider())){
+        SliceDetails::Main::SliceDetailsUI->modal->Hide(true, nullptr);
         justClosedModal = true;
     }
     if (vrPointer->get_vrController()->get_triggerValue() > 0.9f && !SliceDetails::HoverClickHelper::triggerPressed){
         SliceDetails::HoverClickHelper::grabbingController = vrPointer->get_vrController();
         SliceDetails::HoverClickHelper::triggerPressed = true;
-        if ((hit.get_collider() && hit.get_collider()->get_transform() == handleTransform->get_transform())) grabbingHandle = true;
-
+        if ((hit.get_collider() && hit.get_collider()->get_transform() == handleTransform->get_transform())){
+            handleTransform->GetComponent<UnityEngine::MeshRenderer*>()->set_material(hoverHandleMat);
+            grabbingHandle = true;
+            hoveringHandle = true;
+        }
     }
     if (SliceDetails::HoverClickHelper::triggerPressed && SliceDetails::HoverClickHelper::grabbingController->get_triggerValue() < 0.1f){
         if (grabbingHandle){
@@ -125,8 +149,8 @@ void SliceDetails::HoverClickHelper::LateUpdate(){
         outOfRange = false;
         grabbingHandle = false;
     } 
-    if (isHit && SliceDetails::Main::modal->isShown) isHit = false; 
-    if (!notClickedModal && !SliceDetails::Main::modal->isShown) notClickedModal = true;
+    if (isHit && SliceDetails::Main::SliceDetailsUI->modal->isShown) isHit = false; 
+    if (!notClickedModal && !SliceDetails::Main::SliceDetailsUI->modal->isShown) notClickedModal = true;
     
 }
 
