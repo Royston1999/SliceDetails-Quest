@@ -109,7 +109,7 @@ MAKE_HOOK_MATCH(BackToMenuButtonPressed, &MultiplayerResultsViewController::Back
 
 MAKE_HOOK_MATCH(UnMultiplayer, &GameServerLobbyFlowCoordinator::DidDeactivate, void, GameServerLobbyFlowCoordinator* self, bool removedFromHierarchy, bool screenSystemDisabling){
     UnMultiplayer(self, removedFromHierarchy, screenSystemDisabling);
-    Main::SliceDetailsUI->onResultsScreenDeactivate();
+    if (Main::SliceDetailsUI != nullptr) Main::SliceDetailsUI->onResultsScreenDeactivate();
 }
 
 MAKE_HOOK_MATCH(OnNoteCut, &BeatmapObjectManager::HandleNoteControllerNoteWasCut , void, BeatmapObjectManager* self, NoteController* noteController, ByRef<NoteCutInfo> noteCutInfo) {
