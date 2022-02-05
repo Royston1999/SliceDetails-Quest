@@ -20,8 +20,6 @@ namespace SliceDetails{
             static bool configValid;
             static void loadConfig();
             static SliceDetails::SliceDetailsUI* SliceDetailsUI;
-            static bool isPaused;
-            static UnityEngine::Material* UINoGlow;
     };
 }
 

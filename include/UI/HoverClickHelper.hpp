@@ -14,6 +14,7 @@
 #include "UI/ClickableImage.hpp"
 #include "GlobalNamespace/VRController.hpp"
 #include "HMUI/HoverHintController.hpp"
+#include "questui/shared/CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "VRUIControls/VRPointer.hpp"
 
 DECLARE_CLASS_CODEGEN(SliceDetails, HoverClickHelper, UnityEngine::MonoBehaviour,
@@ -32,18 +33,16 @@ DECLARE_CLASS_CODEGEN(SliceDetails, HoverClickHelper, UnityEngine::MonoBehaviour
     DECLARE_INSTANCE_FIELD(UnityEngine::Material*, origHandleMat);
     DECLARE_INSTANCE_FIELD(UnityEngine::Material*, hoverHandleMat);
     DECLARE_INSTANCE_FIELD(UnityEngine::Transform*, currentCollider);
-
+    DECLARE_INSTANCE_FIELD(GlobalNamespace::VRController*, grabbingController);
+    DECLARE_INSTANCE_FIELD(bool, triggerPressed);
+    DECLARE_INSTANCE_FIELD(bool, modalLocked);
 
     DECLARE_INSTANCE_METHOD(void, Init, VRUIControls::VRPointer* pointer, UnityEngine::GameObject* handle);
     DECLARE_INSTANCE_METHOD(void, Awake);
     DECLARE_INSTANCE_METHOD(void, Update);
     DECLARE_INSTANCE_METHOD(void, LateUpdate);
-
-    public:
-        static GlobalNamespace::VRController* grabbingController;
-        static bool triggerPressed;
 );
 
 namespace SliceDetails{
-    void addHoverClickHelper(VRUIControls::VRPointer* pointer, UnityEngine::GameObject* handle);
+    SliceDetails::HoverClickHelper* addHoverClickHelper(VRUIControls::VRPointer* pointer, UnityEngine::GameObject* handle, QuestUI::FloatingScreen* screen);
 }

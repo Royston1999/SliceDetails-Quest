@@ -20,7 +20,7 @@ namespace SliceDetails{
         clickimg->index = index;
         clickimg->image = QuestUI::BeatSaberUI::CreateCanvas();
         UnityEngine::UI::Image* theimg = clickimg->image->AddComponent<UnityEngine::UI::Image*>();
-        theimg->set_material(SliceDetails::Main::UINoGlow);
+        theimg->set_material(SliceDetails::Main::SliceDetailsUI->UINoGlow);
         theimg->set_sprite(sprite);
 
         clickimg->text = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("text"), UnityEngine::Canvas::New_ctor()->GetType());

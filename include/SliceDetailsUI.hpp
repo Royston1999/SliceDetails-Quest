@@ -30,6 +30,10 @@ namespace SliceDetails{
             void initScreen();
             void initNoteData();
             void refreshNoteData();
+            void onPause();
+            void onUnPause();
+            void onResultsScreenActivate();
+            void onResultsScreenDeactivate();
             SliceDetails::NoteUI* modalNotes[18];
             SliceDetails::GridInfo* gridNotes[12];
             UnityEngine::UI::Image* gridDots[12];
@@ -39,5 +43,9 @@ namespace SliceDetails{
             UnityEngine::GameObject* screenhandle = nullptr;
             UnityEngine::GameObject* UIScreen = nullptr;
             HMUI::ModalView* modal = nullptr;
+            UnityEngine::Material* UINoGlow = nullptr;
+            bool isPaused = false;
+            SliceDetails::HoverClickHelper* hoverClickHelper = nullptr;
+            SliceDetails::ModalHelper* modalHelper = nullptr;
     };
 }

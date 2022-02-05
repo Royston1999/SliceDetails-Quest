@@ -4,7 +4,7 @@
 UnityEngine::UI::Image* createImage(UnityEngine::UI::Image* img, UnityEngine::Sprite* sprite, UnityEngine::Transform* parent){
     auto* GO = QuestUI::BeatSaberUI::CreateCanvas();
     img = GO->AddComponent<UnityEngine::UI::Image*>();
-    img->set_material(SliceDetails::Main::UINoGlow);
+    img->set_material(SliceDetails::Main::SliceDetailsUI->UINoGlow);
     img->set_sprite(sprite);
 
     UnityEngine::RectTransform* rectTransform = (UnityEngine::RectTransform*)img->get_transform();
@@ -23,7 +23,7 @@ UnityEngine::UI::Image* createTexture(UnityEngine::UI::Image* img, UnityEngine::
     UnityEngine::Texture2D* texture = UnityEngine::Texture2D::New_ctor(2, 2);
     texture->set_filterMode(UnityEngine::FilterMode::Point);
     texture->Apply();
-    img->set_material(SliceDetails::Main::UINoGlow);
+    img->set_material(SliceDetails::Main::SliceDetailsUI->UINoGlow);
 	img->set_sprite(UnityEngine::Sprite::Create(texture, UnityEngine::Rect(0, 0, texture->get_width(), texture->get_height()), UnityEngine::Vector2(0, 0), 100.0f, 1u, UnityEngine::SpriteMeshType::FullRect, UnityEngine::Vector4(0.0f, 0.0f, 0.0f, 0.0f), false));
     
     UnityEngine::RectTransform* rectTransform = (UnityEngine::RectTransform*)img->get_transform();

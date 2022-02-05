@@ -99,7 +99,7 @@ namespace SliceDetails{
     void SliceDetailsUI::updatePanelImages(){
         for (int i = 0; i<12; i++){
             panelImages[i]->theHint->set_text(il2cpp_utils::createcsstr(gridNotes[i]->cutCount != 0 ? gridNotes[i]->getAverageValueStringData() : ""));
-            panelImages[i]->text->GetComponent<TMPro::TextMeshProUGUI*>()->set_text(il2cpp_utils::createcsstr(gridNotes[i]->cutCount != 0 ?  gridNotes[i]->getAverageScoreString() : ""));
+            panelImages[i]->set_text(gridNotes[i]->cutCount != 0 ?  gridNotes[i]->getAverageScoreString() : "");
         }
     }
     void SliceDetailsUI::initScreen(){
@@ -120,7 +120,7 @@ namespace SliceDetails{
 
         line1->set_spacing(8.8f); line2->set_spacing(8.8f); line3->set_spacing(8.8f); vert->set_spacing(-5.5f);
 
-        SliceDetails::Main::UINoGlow = QuestUI::ArrayUtil::First(UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::Material*>(), [](UnityEngine::Material* x) { return to_utf8(csstrtostr(x->get_name())) == "UINoGlow"; });
+        UINoGlow = QuestUI::ArrayUtil::First(UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::Material*>(), [](UnityEngine::Material* x) { return to_utf8(csstrtostr(x->get_name())) == "UINoGlow"; });
         GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(reinterpret_cast<custom_types::Helpers::enumeratorT*>(custom_types::Helpers::CoroutineHelper::New(createPanelNotes(line1, line2, line3))));
 
         auto* screenthingidk = thing->get_gameObject()->AddComponent<HMUI::Screen*>();
@@ -128,8 +128,8 @@ namespace SliceDetails{
         createGridIndicator(modal->get_transform());
 
         auto* normalpointer = Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>()->get(0);
-        SliceDetails::addHoverClickHelper(normalpointer, screenhandle);
-        SliceDetails::addModalHelper(normalpointer);
+        hoverClickHelper = SliceDetails::addHoverClickHelper(normalpointer, screenhandle, thing);
+        modalHelper = SliceDetails::addModalHelper(normalpointer, thing);
     }
 
     custom_types::Helpers::Coroutine SliceDetailsUI::createPanelNotes(UI::HorizontalLayoutGroup* line1, UI::HorizontalLayoutGroup* line2, UI::HorizontalLayoutGroup* line3)
@@ -151,5 +151,44 @@ namespace SliceDetails{
         for (int i = 0; i < 12; i++) {
             gridNotes[i] = new SliceDetails::GridInfo();
 	    }
+    }
+    void SliceDetailsUI::onPause(){
+        isPaused = true;
+        UIScreen->get_transform()->set_position(UnityEngine::Vector3(SliceDetails::Main::config.pausePosX, SliceDetails::Main::config.pausePosY, SliceDetails::Main::config.pausePosZ));
+        UIScreen->get_transform()->set_rotation(UnityEngine::Quaternion::Euler(SliceDetails::Main::config.pauseRotX, SliceDetails::Main::config.pauseRotY, SliceDetails::Main::config.pauseRotZ));
+        UIScreen->set_active(true);
+        modal->Show(false, true, nullptr);
+        modal->Hide(false, nullptr);
+        
+        auto* pausepointer = Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>()->get(1);
+        auto* mover = pausepointer->get_gameObject()->AddComponent<QuestUI::FloatingScreenMoverPointer*>();
+        mover->Init(UIScreen->GetComponent<QuestUI::FloatingScreen*>(), pausepointer);
+        hoverClickHelper->vrPointer = pausepointer;
+        modalHelper->vrPointer = pausepointer;
+        updatePanelImages();
+    }
+    void SliceDetailsUI::onUnPause(){
+        isPaused = false;
+        if (UIScreen != nullptr){
+            modal->Hide(false, nullptr);
+            UIScreen->set_active(false);
+        }
+    }
+    void SliceDetailsUI::onResultsScreenActivate(){
+        auto* pointer = Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>()->get(0);
+        hoverClickHelper->vrPointer = pointer;
+        modalHelper->vrPointer = pointer;
+        updatePanelImages();
+        UIScreen->get_transform()->set_position(UnityEngine::Vector3(SliceDetails::Main::config.resultPosX , SliceDetails::Main::config.resultPosY, SliceDetails::Main::config.resultPosZ));
+        UIScreen->get_transform()->set_rotation(UnityEngine::Quaternion::Euler(SliceDetails::Main::config.resultRotX, SliceDetails::Main::config.resultRotY, SliceDetails::Main::config.resultRotZ));
+        UIScreen->set_active(true);
+        modal->Show(false, true, nullptr);
+        modal->Hide(false, nullptr);
+    }
+    void SliceDetailsUI::onResultsScreenDeactivate(){
+        if (UIScreen != nullptr){
+            modal->Hide(false, nullptr);
+            UIScreen->set_active(false);
+        }
     }
 }

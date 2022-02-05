@@ -6,7 +6,6 @@
 #include "UnityEngine/Mathf.hpp"
 #include "UI/HoverClickHelper.hpp"
 #include "GlobalNamespace/VRController.hpp"
-#include "questui/shared/CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "HMUI/ModalView.hpp"
 #include "VRUIControls/VRPointer.hpp"
 #include "UnityEngine/Shader.hpp"
@@ -87,9 +86,9 @@ void SliceDetails::HoverClickHelper::Update(){
             hoveringHandle = false;
             handleTransform->GetComponent<UnityEngine::MeshRenderer*>()->set_material(origHandleMat);        }
     }
-    if (isHit && grabbingController && notClickedModal && !justClosedModal && !outOfRange && !SliceDetails::Main::SliceDetailsUI->modal->isShown && SliceDetails::Main::SliceDetailsUI->gridNotes[clickimg->index]->cutCount != 0){
-        SliceDetails::HoverClickHelper::grabbingController = vrPointer->get_vrController();
-        SliceDetails::HoverClickHelper::triggerPressed = true;
+    if (isHit && grabbingController && !modalLocked && notClickedModal && !justClosedModal && !outOfRange && !SliceDetails::Main::SliceDetailsUI->modal->isShown && SliceDetails::Main::SliceDetailsUI->gridNotes[clickimg->index]->cutCount != 0){
+        grabbingController = vrPointer->get_vrController();
+        triggerPressed = true;
         notClickedModal = false;
         clickimg->image->GetComponent<UnityEngine::UI::Image*>()->set_color(UnityEngine::Color::get_gray());
         SliceDetails::Main::SliceDetailsUI->updateGridNotesInfo(clickimg->index);
@@ -97,31 +96,32 @@ void SliceDetails::HoverClickHelper::Update(){
         hintController->hoverHintPanel->Hide();
         clickimg = nullptr;
         isHit = false;
+        modalLocked = true;
     }
-    if (SliceDetails::HoverClickHelper::grabbingController){
-        outOfRange = true;
-    }
+    if (!SliceDetails::Main::SliceDetailsUI->modal->isShown && !modalLocked && !notClickedModal) notClickedModal = true;
+    if (justClosedModal) modalLocked = false;
+    if (grabbingController) outOfRange = true;
 }
 
 void SliceDetails::HoverClickHelper::LateUpdate(){
-    if(!SliceDetails::HoverClickHelper::triggerPressed && !isHit && vrPointer->get_vrController()->get_triggerValue() > 0.9f && SliceDetails::Main::SliceDetailsUI->modal->isShown &&  ((hit.get_collider() && hit.get_collider()->get_transform() != handleTransform->get_transform()) || !hit.get_collider())){
+    if(!triggerPressed && !isHit && vrPointer->get_vrController()->get_triggerValue() > 0.9f && SliceDetails::Main::SliceDetailsUI->modal->isShown &&  ((hit.get_collider() && hit.get_collider()->get_transform() != handleTransform->get_transform()) || !hit.get_collider())){
         SliceDetails::Main::SliceDetailsUI->modal->Hide(true, nullptr);
         justClosedModal = true;
     }
-    if (vrPointer->get_vrController()->get_triggerValue() > 0.9f && !SliceDetails::HoverClickHelper::triggerPressed){
-        SliceDetails::HoverClickHelper::grabbingController = vrPointer->get_vrController();
-        SliceDetails::HoverClickHelper::triggerPressed = true;
+    if (vrPointer->get_vrController()->get_triggerValue() > 0.9f && !triggerPressed){
+        grabbingController = vrPointer->get_vrController();
+        triggerPressed = true;
         if ((hit.get_collider() && hit.get_collider()->get_transform() == handleTransform->get_transform())){
             handleTransform->GetComponent<UnityEngine::MeshRenderer*>()->set_material(hoverHandleMat);
             grabbingHandle = true;
             hoveringHandle = true;
         }
     }
-    if (SliceDetails::HoverClickHelper::triggerPressed && SliceDetails::HoverClickHelper::grabbingController->get_triggerValue() < 0.1f){
+    if (triggerPressed && grabbingController->get_triggerValue() < 0.1f){
         if (grabbingHandle){
             auto* screenTransform = handleTransform->get_transform()->get_parent();
             if ((float)(screenTransform->get_position().y) < 0.5) screenTransform->Translate(0.0f, (0.5 - screenTransform->get_position().y), 0.0f, UnityEngine::Space::World);
-            if (SliceDetails::Main::isPaused){
+            if (SliceDetails::Main::SliceDetailsUI->isPaused){
                 setFloat(getConfig().config, "pausePosX", screenTransform->get_position().x);
                 setFloat(getConfig().config, "pausePosY", screenTransform->get_position().y);
                 setFloat(getConfig().config, "pausePosZ", screenTransform->get_position().z);
@@ -143,18 +143,18 @@ void SliceDetails::HoverClickHelper::LateUpdate(){
             }
             ConfigHelper::LoadConfig(SliceDetails::Main::config, getConfig().config);
         }
-        SliceDetails::HoverClickHelper::grabbingController = nullptr;
-        SliceDetails::HoverClickHelper::triggerPressed = false;
+        grabbingController = nullptr;
+        triggerPressed = false;
         justClosedModal = false;
         outOfRange = false;
         grabbingHandle = false;
     } 
     if (isHit && SliceDetails::Main::SliceDetailsUI->modal->isShown) isHit = false; 
-    if (!notClickedModal && !SliceDetails::Main::SliceDetailsUI->modal->isShown) notClickedModal = true;
     
 }
 
-void SliceDetails::addHoverClickHelper(VRUIControls::VRPointer* pointer, UnityEngine::GameObject* handle){
-    auto* helper = pointer->get_gameObject()->AddComponent<SliceDetails::HoverClickHelper*>();
+SliceDetails::HoverClickHelper* SliceDetails::addHoverClickHelper(VRUIControls::VRPointer* pointer, UnityEngine::GameObject* handle, QuestUI::FloatingScreen* screen){
+    auto* helper = screen->get_gameObject()->AddComponent<SliceDetails::HoverClickHelper*>();
     helper->Init(pointer, handle);
+    return helper;
 }

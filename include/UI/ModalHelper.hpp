@@ -14,6 +14,7 @@
 #include "UI/ClickableImage.hpp"
 #include "GlobalNamespace/VRController.hpp"
 #include "HMUI/HoverHintController.hpp"
+#include "questui/shared/CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "VRUIControls/VRPointer.hpp"
 
 DECLARE_CLASS_CODEGEN(SliceDetails, ModalHelper, UnityEngine::MonoBehaviour,
@@ -28,14 +29,8 @@ DECLARE_CLASS_CODEGEN(SliceDetails, ModalHelper, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_METHOD(void, Awake);
     DECLARE_INSTANCE_METHOD(void, Update);
     DECLARE_INSTANCE_METHOD(void, LateUpdate);
-
-    
-
-    public:
-        static GlobalNamespace::VRController* grabbingController;
-        static bool triggerPressed;
 );
 
 namespace SliceDetails{
-    void addModalHelper(VRUIControls::VRPointer* pointer);
+    SliceDetails::ModalHelper* addModalHelper(VRUIControls::VRPointer* pointer, QuestUI::FloatingScreen* screen);
 }

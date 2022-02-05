@@ -6,7 +6,6 @@
 #include "UnityEngine/Mathf.hpp"
 #include "UI/ModalHelper.hpp"
 #include "GlobalNamespace/VRController.hpp"
-#include "questui/shared/CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "HMUI/ModalView.hpp"
 #include "VRUIControls/VRPointer.hpp"
 #include "UnityEngine/Space.hpp"
@@ -52,7 +51,8 @@ void SliceDetails::ModalHelper::LateUpdate(){
     }
 }
 
-void SliceDetails::addModalHelper(VRUIControls::VRPointer* pointer){
-    auto* helper = pointer->get_gameObject()->AddComponent<SliceDetails::ModalHelper*>();
+SliceDetails::ModalHelper* SliceDetails::addModalHelper(VRUIControls::VRPointer* pointer, QuestUI::FloatingScreen* screen){
+    auto* helper = screen->get_gameObject()->AddComponent<SliceDetails::ModalHelper*>();
     helper->Init(pointer);
+    return helper;
 }
