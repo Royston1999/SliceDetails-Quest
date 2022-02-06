@@ -11,7 +11,7 @@
 #include "UnityEngine/Time.hpp"
 #include "UnityEngine/Mathf.hpp"
 #include "UnityEngine/Resources.hpp"
-#include "UI/ClickableImage.hpp"
+#include "UI/PanelUI.hpp"
 #include "GlobalNamespace/VRController.hpp"
 #include "HMUI/HoverHintController.hpp"
 #include "questui/shared/CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
@@ -19,7 +19,6 @@
 
 DECLARE_CLASS_CODEGEN(SliceDetails, HoverClickHelper, UnityEngine::MonoBehaviour,
 
-    DECLARE_INSTANCE_FIELD(::SliceDetails::ClickableImage*, clickimg);
     DECLARE_INSTANCE_FIELD(VRUIControls::VRPointer*, vrPointer);
     DECLARE_INSTANCE_FIELD(UnityEngine::RaycastHit, hit);
     DECLARE_INSTANCE_FIELD(HMUI::HoverHintController*, hintController);
@@ -41,6 +40,10 @@ DECLARE_CLASS_CODEGEN(SliceDetails, HoverClickHelper, UnityEngine::MonoBehaviour
     DECLARE_INSTANCE_METHOD(void, Awake);
     DECLARE_INSTANCE_METHOD(void, Update);
     DECLARE_INSTANCE_METHOD(void, LateUpdate);
+    DECLARE_INSTANCE_METHOD(void, resetBools);
+
+    public:
+        SliceDetails::PanelUI* panelUI;
 );
 
 namespace SliceDetails{

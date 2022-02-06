@@ -32,21 +32,14 @@
 #include "UnityEngine/RaycastHit.hpp"
 #include "UnityEngine/Physics.hpp"
 
-DECLARE_CLASS_CODEGEN(SliceDetails, ClickableImage, UnityEngine::MonoBehaviour,
-    DECLARE_INSTANCE_METHOD(void, Awake);
-    DECLARE_INSTANCE_METHOD(void, Update);
-
-    DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, text);
-    DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, image);
-    DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, hoverHint);
-    DECLARE_INSTANCE_FIELD(HMUI::HoverHint*, theHint);
-    DECLARE_INSTANCE_FIELD(bool, modalComponent);
-    DECLARE_INSTANCE_FIELD(int, index);
-
-    public:
-        void set_text(std::string string);
-);
-
 namespace SliceDetails{
-    SliceDetails::ClickableImage* CreateClickableImage(UnityEngine::Transform* parent, std::string name, UnityEngine::Sprite* image, std::string text, int index);
+    class PanelUI{
+        public:
+            TMPro::TextMeshProUGUI* text;
+            UnityEngine::UI::Image* image;
+            HMUI::HoverHint* hoverHint;
+            int index;
+            PanelUI(UnityEngine::Transform* parent, UnityEngine::Sprite* image, int index);
+            void set_panelText(std::string string);
+    };
 }

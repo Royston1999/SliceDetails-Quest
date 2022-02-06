@@ -98,8 +98,8 @@ namespace SliceDetails{
 
     void SliceDetailsUI::updatePanelImages(){
         for (int i = 0; i<12; i++){
-            panelImages[i]->theHint->set_text(il2cpp_utils::createcsstr(gridNotes[i]->cutCount != 0 ? gridNotes[i]->getAverageValueStringData() : ""));
-            panelImages[i]->set_text(gridNotes[i]->cutCount != 0 ?  gridNotes[i]->getAverageScoreString() : "");
+            panelImages[i]->hoverHint->set_text(il2cpp_utils::createcsstr(gridNotes[i]->cutCount != 0 ? gridNotes[i]->getAverageValueStringData() : ""));
+            panelImages[i]->set_panelText(gridNotes[i]->cutCount != 0 ?  gridNotes[i]->getAverageScoreString() : "");
         }
     }
     void SliceDetailsUI::initScreen(){
@@ -136,7 +136,7 @@ namespace SliceDetails{
     {
         for (int i=0; i<12; i++){
             auto* layout = i<4 ? line1 : i<8 ? line2 : i<12 ? line3 : nullptr;
-            panelImages[i] = SliceDetails::CreateClickableImage(layout->get_transform(), "bloq", QuestUI::BeatSaberUI::Base64ToSprite(SliceDetails::Sprites::bloq_gradient), "115", i);
+            panelImages[i] = new PanelUI(layout->get_transform(), QuestUI::BeatSaberUI::Base64ToSprite(SliceDetails::Sprites::bloq_gradient), i);
             co_yield nullptr;
         }
         co_return;
@@ -165,6 +165,7 @@ namespace SliceDetails{
         mover->Init(UIScreen->GetComponent<QuestUI::FloatingScreen*>(), pausepointer);
         hoverClickHelper->vrPointer = pausepointer;
         modalHelper->vrPointer = pausepointer;
+        hoverClickHelper->resetBools();
         updatePanelImages();
     }
     void SliceDetailsUI::onUnPause(){
@@ -178,6 +179,7 @@ namespace SliceDetails{
         auto* pointer = Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>()->get(0);
         hoverClickHelper->vrPointer = pointer;
         modalHelper->vrPointer = pointer;
+        hoverClickHelper->resetBools();
         updatePanelImages();
         UIScreen->get_transform()->set_position(UnityEngine::Vector3(SliceDetails::Main::config.resultPosX , SliceDetails::Main::config.resultPosY, SliceDetails::Main::config.resultPosZ));
         UIScreen->get_transform()->set_rotation(UnityEngine::Quaternion::Euler(SliceDetails::Main::config.resultRotX, SliceDetails::Main::config.resultRotY, SliceDetails::Main::config.resultRotZ));
@@ -190,5 +192,28 @@ namespace SliceDetails{
             modal->Hide(false, nullptr);
             UIScreen->set_active(false);
         }
+    }
+    void SliceDetailsUI::updateCoordinates(UnityEngine::Transform* transform){
+        if (SliceDetails::Main::SliceDetailsUI->isPaused){
+            setFloat(getConfig().config, "pausePosX", transform->get_position().x);
+            setFloat(getConfig().config, "pausePosY", transform->get_position().y);
+            setFloat(getConfig().config, "pausePosZ", transform->get_position().z);
+            getConfig().Write();
+            setFloat(getConfig().config, "pauseRotX", transform->get_rotation().get_eulerAngles().x);
+            setFloat(getConfig().config, "pauseRotY", transform->get_rotation().get_eulerAngles().y);
+            setFloat(getConfig().config, "pauseRotZ", transform->get_rotation().get_eulerAngles().z);
+            getConfig().Write();
+        }
+        else{
+            setFloat(getConfig().config, "resultPosX", transform->get_position().x);
+            setFloat(getConfig().config, "resultPosY", transform->get_position().y);
+            setFloat(getConfig().config, "resultPosZ", transform->get_position().z);
+            getConfig().Write();
+            setFloat(getConfig().config, "resultRotX", transform->get_rotation().get_eulerAngles().x);
+            setFloat(getConfig().config, "resultRotY", transform->get_rotation().get_eulerAngles().y);
+            setFloat(getConfig().config, "resultRotZ", transform->get_rotation().get_eulerAngles().z);
+            getConfig().Write();
+        }
+        ConfigHelper::LoadConfig(SliceDetails::Main::config, getConfig().config);
     }
 }

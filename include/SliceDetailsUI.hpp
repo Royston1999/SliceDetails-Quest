@@ -6,7 +6,7 @@
 #include "Data/NoteInfo.hpp"
 #include "UI/NoteUI.hpp"
 #include "HMUI/ModalView.hpp"
-#include "UI/ClickableImage.hpp"
+#include "UI/PanelUI.hpp"
 #include "questui/shared/CustomTypes/Components/FloatingScreen/FloatingScreenMoverPointer.hpp"
 #include "questui/shared/CustomTypes/Components/Backgroundable.hpp"
 #include "GlobalNamespace/SharedCoroutineStarter.hpp"
@@ -34,10 +34,11 @@ namespace SliceDetails{
             void onUnPause();
             void onResultsScreenActivate();
             void onResultsScreenDeactivate();
+            void updateCoordinates(UnityEngine::Transform* transform);
             SliceDetails::NoteUI* modalNotes[18];
             SliceDetails::GridInfo* gridNotes[12];
             UnityEngine::UI::Image* gridDots[12];
-            SliceDetails::ClickableImage* panelImages[12];
+            SliceDetails::PanelUI* panelImages[12];
             UnityEngine::Color leftHand;
             UnityEngine::Color rightHand;
             UnityEngine::GameObject* screenhandle = nullptr;

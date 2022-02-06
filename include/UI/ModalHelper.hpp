@@ -11,7 +11,7 @@
 #include "UnityEngine/Time.hpp"
 #include "UnityEngine/Mathf.hpp"
 #include "UnityEngine/Resources.hpp"
-#include "UI/ClickableImage.hpp"
+#include "UI/PanelUI.hpp"
 #include "GlobalNamespace/VRController.hpp"
 #include "HMUI/HoverHintController.hpp"
 #include "questui/shared/CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
