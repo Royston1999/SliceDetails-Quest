@@ -51,7 +51,7 @@ void SliceDetails::HoverClickHelper::Update(){
                     hintController->SetupAndShowHintPanel(panelUI->hoverHint);
                     panelUI->hoverHint->set_enabled(true);
                     panelUI->hoverHint->get_gameObject()->set_active(true);
-                    hintController->hoverHintPanel->get_transform()->set_localScale({0.5f, 0.5f, 0.0f});
+                    hintController->hoverHintPanel->get_transform()->set_localScale({0.6f, 0.6f, 0.0f});
                     hintController->hoverHintPanel->get_transform()->set_position(panelUI->hoverHint->get_transform()->get_position());
                     hintController->hoverHintPanel->get_transform()->Translate({0.0f, 0.21f, 0.0f}, UnityEngine::Space::Self);
                 }

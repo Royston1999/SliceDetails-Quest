@@ -25,7 +25,7 @@ void SliceDetails::ModalHelper::Init(VRUIControls::VRPointer* pointer){
 
 void SliceDetails::ModalHelper::Update(){
     if(UnityEngine::Physics::Raycast(vrPointer->get_vrController()->get_position(), vrPointer->get_vrController()->get_forward(), hit, 100)){
-        if(to_utf8(csstrtostr(hit.get_collider()->get_name())).compare("modalcollider") == 0){
+        if(to_utf8(csstrtostr(hit.get_collider()->get_name())).compare("modalcollider") == 0 && !SliceDetails::Main::SliceDetailsUI->hoverClickHelper->grabbingHandle){
             if (!isHit){
                 hint = hit.get_collider()->get_transform()->get_parent()->GetComponentInChildren<HMUI::HoverHint*>();
                 if (SliceDetails::Main::SliceDetailsUI->modal->isShown){

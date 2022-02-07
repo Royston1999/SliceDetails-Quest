@@ -13,8 +13,7 @@ SliceDetails::PanelUI::PanelUI(UnityEngine::Transform* parent, UnityEngine::Spri
     image->set_material(SliceDetails::Main::SliceDetailsUI->UINoGlow);
     image->set_sprite(sprite);
 
-    text = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("text"), UnityEngine::Canvas::New_ctor()->GetType())->AddComponent<TMPro::TextMeshProUGUI*>();
-    text->set_text(il2cpp_utils::createcsstr("knob"));
+    text = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("text"))->AddComponent<TMPro::TextMeshProUGUI*>();
     text->get_gameObject()->set_layer(1);
     text->set_isOverlay(true);
     text->set_fontSize(5.0f);
