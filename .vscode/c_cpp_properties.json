@@ -2,8 +2,8 @@
     "configurations": [
         {
             "defines": [
-                "ID=\"scorepercentage\"",
-                "VERSION=\"0.1.0\"",
+                "ID=\"slicedetails\"",
+                "VERSION=\"1.0.0\"",
                 "__GNUC__",
                 "__aarch64__"
             ],
