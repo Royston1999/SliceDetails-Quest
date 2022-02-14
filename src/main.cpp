@@ -33,7 +33,7 @@ using namespace SliceDetails;
 SliceDetailsUI* Main::SliceDetailsUI = nullptr;
 Config Main::config;
 std::map<ISaberSwingRatingCounter*, NoteInfo*> dict;
-static auto skillIssue = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Skill Issue");
+// static auto skillIssue = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Skill Issue");
 
 static ModInfo modInfo;
 
@@ -209,10 +209,10 @@ MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &MenuTransitionsHelper::Resta
 }
 
 //ha ha funny skilly issue
-MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self){
-    levelview(self);
-    self->practiceButton->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText(skillIssue);
-}
+// MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self){
+//     levelview(self);
+//     self->practiceButton->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText(skillIssue);
+// }
 
 
 // Called later on in the game loading - a good time to install function hooks
@@ -237,6 +237,6 @@ extern "C" void load() {
     INSTALL_HOOK(getLogger(), BackToMenuButtonPressed);
     INSTALL_HOOK(getLogger(), UnMultiplayer);
     INSTALL_HOOK(getLogger(), MenuTransitionsHelper_RestartGame);
-    INSTALL_HOOK(getLogger(), levelview);
+    // INSTALL_HOOK(getLogger(), levelview);
     getLogger().info("Installed all hooks!");
 }
