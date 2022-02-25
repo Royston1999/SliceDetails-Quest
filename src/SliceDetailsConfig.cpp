@@ -16,10 +16,6 @@ std::optional<bool> getBool(Value& obj, std::string_view fieldName, bool require
     GET(obj, fieldName, GetBool, required);
 }
 
-std::optional<int> getInt(Value& obj, std::string_view fieldName, bool required) {
-    GET(obj, fieldName, GetInt, required);
-}
-
 std::optional<float> getFloat(Value& obj, std::string_view fieldName, bool required) {
     GET(obj, fieldName, GetFloat, required);
 }
@@ -31,16 +27,8 @@ std::optional<bool> setBool(Value& obj, std::string_view fieldName, bool value, 
         }
     }
     itr->value.SetBool(value);
-    return true;
-}
-
-std::optional<int> setInt(Value& obj, std::string_view fieldName, int value, bool required) {
-    auto itr = obj.FindMember(fieldName.data());
-    if (itr == obj.MemberEnd()) {
-        if (required) {
-        }
-    }
-    itr->value.SetInt(value);
+    getConfig().Write();
+    ConfigHelper::LoadConfig(SliceDetails::Main::config, getConfig().config);
     return true;
 }
 
@@ -71,6 +59,8 @@ bool ConfigHelper::LoadConfig(SliceDetails::Config& con, ConfigDocument& config)
     con.resultRotX = getFloat(config, "resultRotX").value_or(0);
     con.resultRotY = getFloat(config, "resultRotY").value_or(0);
     con.resultRotZ = getFloat(config, "resultRotZ").value_or(0);
+
+    con.isEnabled = con.inPause || con.inResults; 
     return true;
 }
 

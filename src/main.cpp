@@ -4,6 +4,7 @@
 #include <map>
 #include "questui/shared/QuestUI.hpp"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
+#include "SettingsViewController.hpp"
 #include "GlobalNamespace/ResultsViewController.hpp"
 #include "GlobalNamespace/LevelCompletionResults.hpp"
 #include "GlobalNamespace/PauseMenuManager.hpp"
@@ -33,7 +34,7 @@ using namespace SliceDetails;
 SliceDetailsUI* Main::SliceDetailsUI = nullptr;
 Config Main::config;
 std::map<ISaberSwingRatingCounter*, NoteInfo*> dict;
-// static auto skillIssue = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Skill Issue");
+static auto skillIssue = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Skill Issue");
 
 static ModInfo modInfo;
 
@@ -64,56 +65,57 @@ void Main::loadConfig() {
 
 MAKE_HOOK_MATCH(Pause, &GamePause::Pause, void, GamePause* self) {
     Pause(self);
-    Main::SliceDetailsUI->onPause();
+    if (Main::config.inPause) Main::SliceDetailsUI->onPause();
 }
 
 MAKE_HOOK_MATCH(Unpause, &GamePause::Resume, void, GlobalNamespace::GamePause* self) {
     Unpause(self);
-    Main::SliceDetailsUI->onUnPause();
+    if (Main::config.isEnabled) Main::SliceDetailsUI->onUnPause();
 }
 
 MAKE_HOOK_MATCH(Menubutton, &PauseMenuManager::MenuButtonPressed , void, PauseMenuManager* self) {
     Menubutton(self);
-    Main::SliceDetailsUI->onUnPause();
+    if (Main::config.isEnabled) Main::SliceDetailsUI->onUnPause();
 }
 
 MAKE_HOOK_MATCH(Restartbutton, &PauseMenuManager::RestartButtonPressed, void, PauseMenuManager* self) {
     Restartbutton(self);
-    Main::SliceDetailsUI->onUnPause();
+    if (Main::config.isEnabled) Main::SliceDetailsUI->onUnPause();
 }
 
 MAKE_HOOK_MATCH(Results, &ResultsViewController::Init, void, ResultsViewController* self, LevelCompletionResults* levelCompletionResults, IDifficultyBeatmap* difficultyBeatmap, bool practice, bool newHighScore) {
     Results(self, levelCompletionResults, difficultyBeatmap, practice, newHighScore);
-    Main::SliceDetailsUI->onResultsScreenActivate();
+    if (Main::config.inResults) Main::SliceDetailsUI->onResultsScreenActivate();
 }
 
 MAKE_HOOK_MATCH(Unresults, &ResultsViewController::DidDeactivate, void, ResultsViewController* self, bool removedFromHierarchy, bool screenSystemDisabling) {
     Unresults(self, removedFromHierarchy, screenSystemDisabling);
-    Main::SliceDetailsUI->onResultsScreenDeactivate();
+    if (Main::config.isEnabled)Main::SliceDetailsUI->onResultsScreenDeactivate();
 }
 
 MAKE_HOOK_MATCH(MultiResults, &MultiplayerResultsViewController::DidActivate, void, MultiplayerResultsViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     MultiResults(self, firstActivation, addedToHierarchy, screenSystemEnabling);
-    Main::SliceDetailsUI->onResultsScreenActivate();
+    if (Main::config.isEnabled) Main::SliceDetailsUI->onResultsScreenActivate();
 }
 
 MAKE_HOOK_MATCH(BackToLobbyButtonPressed, &MultiplayerResultsViewController::BackToLobbyPressed, void, MultiplayerResultsViewController* self) {
     BackToLobbyButtonPressed(self);
-    Main::SliceDetailsUI->onResultsScreenDeactivate();
+    if (Main::config.isEnabled) Main::SliceDetailsUI->onResultsScreenDeactivate();
 }
 
 MAKE_HOOK_MATCH(BackToMenuButtonPressed, &MultiplayerResultsViewController::BackToMenuPressed, void, MultiplayerResultsViewController* self) {
     BackToMenuButtonPressed(self);
-    Main::SliceDetailsUI->onResultsScreenDeactivate();
+    if (Main::config.isEnabled) Main::SliceDetailsUI->onResultsScreenDeactivate();
 }
 
 MAKE_HOOK_MATCH(UnMultiplayer, &GameServerLobbyFlowCoordinator::DidDeactivate, void, GameServerLobbyFlowCoordinator* self, bool removedFromHierarchy, bool screenSystemDisabling){
     UnMultiplayer(self, removedFromHierarchy, screenSystemDisabling);
-    if (Main::SliceDetailsUI != nullptr) Main::SliceDetailsUI->onResultsScreenDeactivate();
+    if (Main::config.isEnabled && Main::SliceDetailsUI != nullptr) Main::SliceDetailsUI->onResultsScreenDeactivate();
 }
 
 MAKE_HOOK_MATCH(OnNoteCut, &BeatmapObjectManager::HandleNoteControllerNoteWasCut , void, BeatmapObjectManager* self, NoteController* noteController, ByRef<NoteCutInfo> noteCutInfo) {
     OnNoteCut(self, noteController, noteCutInfo);
+    if (!Main::config.isEnabled) return;
     if (noteController->noteData->colorType == ColorType::None || !noteCutInfo.heldRef.get_allIsOK()) return;
     if (noteController == nullptr) return;
 			
@@ -170,6 +172,7 @@ MAKE_HOOK_MATCH(OnNoteCut, &BeatmapObjectManager::HandleNoteControllerNoteWasCut
 // this entire thing might not be necessary. edit: it was very much necessary
 MAKE_HOOK_MATCH(HandleSwingFinish, &CutScoreBuffer::HandleSaberSwingRatingCounterDidFinish, void, CutScoreBuffer* self, ISaberSwingRatingCounter* counter) {
     HandleSwingFinish(self, counter);
+    if (!Main::config.isEnabled) return;
     // also need to add stuff here
     if (dict.find(counter) != dict.end()){
         NoteInfo* notecutinfo = dict.find(counter)->second;
@@ -188,31 +191,39 @@ MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(GameplayCoreSceneSetupData_ctor, "", "Gamep
     GameplayCoreSceneSetupData_ctor(self, difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfo, colorScheme);
 
     bool firstActivation = false;
-    if (Main::SliceDetailsUI == nullptr){
-        firstActivation = true;
-        Main::SliceDetailsUI = (SliceDetailsUI*)malloc(sizeof(SliceDetailsUI));
-        Main::SliceDetailsUI->initScreen();
-    }
-    Main::SliceDetailsUI->UIScreen->set_active(false);
+    if (Main::config.isEnabled) {
+        if (Main::SliceDetailsUI == nullptr){
+            firstActivation = true;
+            Main::SliceDetailsUI = (SliceDetailsUI*)malloc(sizeof(SliceDetailsUI));
+            Main::SliceDetailsUI->initScreen();
+        }
+        Main::SliceDetailsUI->UIScreen->set_active(false);
 
-    if (firstActivation) Main::SliceDetailsUI->initNoteData();
-    else Main::SliceDetailsUI->refreshNoteData();
-    Main::SliceDetailsUI->leftHand = colorScheme->get_saberAColor();
-    Main::SliceDetailsUI->rightHand = colorScheme->get_saberBColor();
+        if (firstActivation) Main::SliceDetailsUI->initNoteData();
+        else Main::SliceDetailsUI->refreshNoteData();
+        Main::SliceDetailsUI->leftHand = colorScheme->get_saberAColor();
+        Main::SliceDetailsUI->rightHand = colorScheme->get_saberBColor();
+    }
+    else if (!Main::config.isEnabled && Main::SliceDetailsUI != nullptr){
+        GameObject::Destroy(Main::SliceDetailsUI->UIScreen->get_gameObject());
+        delete Main::SliceDetailsUI;
+        Main::SliceDetailsUI = nullptr;
+    }
 }
 
 MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &MenuTransitionsHelper::RestartGame, void, MenuTransitionsHelper* self, System::Action_1<Zenject::DiContainer*>* finishCallback)
 {
+    GameObject::Destroy(Main::SliceDetailsUI->UIScreen->get_gameObject());
     delete Main::SliceDetailsUI;
     Main::SliceDetailsUI = nullptr;
     MenuTransitionsHelper_RestartGame(self, finishCallback);
 }
 
 //ha ha funny skilly issue
-// MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self){
-//     levelview(self);
-//     self->practiceButton->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText(skillIssue);
-// }
+MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self){
+    levelview(self);
+    self->practiceButton->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText(skillIssue);
+}
 
 
 // Called later on in the game loading - a good time to install function hooks
@@ -221,6 +232,7 @@ extern "C" void load() {
     Main::loadConfig();
     QuestUI::Init();
     custom_types::Register::AutoRegister();
+    QuestUI::Register::RegisterModSettingsViewController<SliceDetails::SettingsViewController*>(modInfo);
     getLogger().info("Installing hooks...");
     // Install our hooks
     INSTALL_HOOK(getLogger(), Pause);
@@ -237,6 +249,6 @@ extern "C" void load() {
     INSTALL_HOOK(getLogger(), BackToMenuButtonPressed);
     INSTALL_HOOK(getLogger(), UnMultiplayer);
     INSTALL_HOOK(getLogger(), MenuTransitionsHelper_RestartGame);
-    // INSTALL_HOOK(getLogger(), levelview);
+    INSTALL_HOOK(getLogger(), levelview);
     getLogger().info("Installed all hooks!");
 }

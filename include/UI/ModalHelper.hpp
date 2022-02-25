@@ -13,6 +13,7 @@
 #include "UnityEngine/Resources.hpp"
 #include "UI/PanelUI.hpp"
 #include "GlobalNamespace/VRController.hpp"
+#include "HMUI/HoverHint.hpp"
 #include "HMUI/HoverHintController.hpp"
 #include "questui/shared/CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "VRUIControls/VRPointer.hpp"
