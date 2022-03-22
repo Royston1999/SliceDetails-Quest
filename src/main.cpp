@@ -25,6 +25,7 @@
 #include "Globalnamespace/StandardLevelDetailView.hpp"
 #include "GlobalNamespace/LevelCompletionResults.hpp"
 #include "GlobalNamespace/MenuTransitionsHelper.hpp"
+#include "GlobalNamespace/MainSettingsModelSO.hpp"
 #include "GlobalNamespace/IDifficultyBeatmap.hpp"
 
 using namespace UnityEngine;
@@ -33,8 +34,7 @@ using namespace SliceDetails;
 
 SliceDetailsUI* Main::SliceDetailsUI = nullptr;
 Config Main::config;
-std::map<ISaberSwingRatingCounter*, NoteInfo*> dict;
-static auto skillIssue = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Skill Issue");
+std::map<NoteData*, NoteInfo*> dict;
 
 static ModInfo modInfo;
 
@@ -83,8 +83,8 @@ MAKE_HOOK_MATCH(Restartbutton, &PauseMenuManager::RestartButtonPressed, void, Pa
     if (Main::config.isEnabled) Main::SliceDetailsUI->onUnPause();
 }
 
-MAKE_HOOK_MATCH(Results, &ResultsViewController::Init, void, ResultsViewController* self, LevelCompletionResults* levelCompletionResults, IDifficultyBeatmap* difficultyBeatmap, bool practice, bool newHighScore) {
-    Results(self, levelCompletionResults, difficultyBeatmap, practice, newHighScore);
+MAKE_HOOK_MATCH(Results, &ResultsViewController::Init, void, ResultsViewController* self, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, bool practice, bool newHighScore) {
+    Results(self, levelCompletionResults, transformedBeatmapData, difficultyBeatmap, practice, newHighScore);
     if (Main::config.inResults) Main::SliceDetailsUI->onResultsScreenActivate();
 }
 
@@ -116,12 +116,13 @@ MAKE_HOOK_MATCH(UnMultiplayer, &GameServerLobbyFlowCoordinator::DidDeactivate, v
 MAKE_HOOK_MATCH(OnNoteCut, &BeatmapObjectManager::HandleNoteControllerNoteWasCut , void, BeatmapObjectManager* self, NoteController* noteController, ByRef<NoteCutInfo> noteCutInfo) {
     OnNoteCut(self, noteController, noteCutInfo);
     if (!Main::config.isEnabled) return;
-    if (noteController->noteData->colorType == ColorType::None || !noteCutInfo.heldRef.get_allIsOK()) return;
+    if (noteController->get_noteData()->get_scoringType() == NoteData::ScoringType::BurstSliderElement) return;
+    if (noteController->get_noteData()->get_colorType() == ColorType::None || !noteCutInfo.heldRef.get_allIsOK()) return;
     if (noteController == nullptr) return;
 			
     Vector2 noteGridPosition;
-    noteGridPosition.y = (int)noteController->noteData->noteLineLayer;
-    noteGridPosition.x = noteController->noteData->lineIndex;
+    noteGridPosition.y = (int)noteController->get_noteData()->get_noteLineLayer();
+    noteGridPosition.x = noteController->get_noteData()->get_lineIndex();
     int noteIndex = (int)((2 - noteGridPosition.y) * 4 + noteGridPosition.x);
 
     // No ME notes allowed >:(
@@ -129,15 +130,11 @@ MAKE_HOOK_MATCH(OnNoteCut, &BeatmapObjectManager::HandleNoteControllerNoteWasCut
 
     float cutAngle = noteCutInfo.heldRef.cutDirDeviation;
     float cutOffset = noteCutInfo.heldRef.cutDistanceToCenter;
-    Vector3 noteCenter = noteController->noteTransform->get_position();
-    if (UnityEngine::Vector3::Dot(noteCutInfo.heldRef.cutNormal, noteCutInfo.heldRef.cutPoint - noteCenter) > 0.0f)
-    {
-        cutOffset = -cutOffset;
-    }
+    Vector3 noteCenter = noteController->get_noteTransform()->get_position();
+    if (UnityEngine::Vector3::Dot(noteCutInfo.heldRef.cutNormal, noteCutInfo.heldRef.cutPoint - noteCenter) > 0.0f) cutOffset = -cutOffset;
 
-    // need to add stuff here to put values into array
     int notePosIndex;
-    switch (noteController->noteData->cutDirection.value){
+    switch (noteController->get_noteData()->get_cutDirection().value){
         case NoteCutDirection::UpLeft:
             notePosIndex = 0; break;
         case NoteCutDirection::Up:
@@ -160,35 +157,34 @@ MAKE_HOOK_MATCH(OnNoteCut, &BeatmapObjectManager::HandleNoteControllerNoteWasCut
             notePosIndex = -1; break;
     }
     if (notePosIndex == -1) return;
-    if (noteController->noteData->colorType == ColorType::ColorB){
+    if (noteController->get_noteData()->get_colorType() == ColorType::ColorB){
         notePosIndex += 9;
     }
-
     NoteInfo* temp = new NoteInfo();
     temp->addNewNoteData(noteIndex, notePosIndex, noteCutInfo.heldRef.cutDistanceToCenter, cutAngle, cutOffset);
-    dict.insert(std::make_pair(noteCutInfo.heldRef.swingRatingCounter, temp));
+    dict.insert(std::make_pair(noteCutInfo.heldRef.dyn_noteData(), temp));
 }
 
 // this entire thing might not be necessary. edit: it was very much necessary
 MAKE_HOOK_MATCH(HandleSwingFinish, &CutScoreBuffer::HandleSaberSwingRatingCounterDidFinish, void, CutScoreBuffer* self, ISaberSwingRatingCounter* counter) {
     HandleSwingFinish(self, counter);
     if (!Main::config.isEnabled) return;
-    // also need to add stuff here
-    if (dict.find(counter) != dict.end()){
-        NoteInfo* notecutinfo = dict.find(counter)->second;
+    if (dict.find(self->get_noteCutInfo().dyn_noteData()) != dict.end()){
+        NoteInfo* notecutinfo = dict.find(self->get_noteCutInfo().dyn_noteData())->second;
         int preSwing, postSwing, offset;
-        GlobalNamespace::ScoreModel::RawScoreWithoutMultiplier(counter, notecutinfo->offset, preSwing, postSwing, offset);
+        preSwing = self->get_beforeCutScore();
+        postSwing = self->get_noteCutInfo().noteData->get_scoringType() == NoteData::ScoringType::BurstSliderHead ? 30 : self->get_afterCutScore();
+        offset = self->get_centerDistanceCutScore();
         Main::SliceDetailsUI->gridNotes[(int)notecutinfo->preswing]->notes[(int)notecutinfo->postswing]->addNewNoteData(preSwing, postSwing, offset, notecutinfo->cutAngle, notecutinfo->cutOffset);
         Main::SliceDetailsUI->gridNotes[(int)notecutinfo->preswing]->addNewGridPosData(preSwing, postSwing, offset);
-        dict.erase(counter);
+        dict.erase(self->get_noteCutInfo().dyn_noteData());
         delete notecutinfo;
     }
 }
 
-MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(GameplayCoreSceneSetupData_ctor, "", "GameplayCoreSceneSetupData", ".ctor", void, GameplayCoreSceneSetupData* self, IDifficultyBeatmap* difficultyBeatmap, IPreviewBeatmapLevel* previewBeatmapLevel, GameplayModifiers* gameplayModifiers, PlayerSpecificSettings* playerSpecificSettings, PracticeSettings* practiceSettings, bool useTestNoteCutSoundEffects, EnvironmentInfoSO* environmentInfo, ColorScheme* colorScheme)
+MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(GameplayCoreSceneSetupData_ctor, "", "GameplayCoreSceneSetupData", ".ctor", void, GameplayCoreSceneSetupData* self, IDifficultyBeatmap* difficultyBeatmap, IPreviewBeatmapLevel* previewBeatmapLevel, GameplayModifiers* gameplayModifiers, PlayerSpecificSettings* playerSpecificSettings, PracticeSettings* practiceSettings, bool useTestNoteCutSoundEffects, EnvironmentInfoSO* environmentInfo, ColorScheme* colorScheme, MainSettingsModelSO* mainSettingsModel)
 {
-    //colorScheme valid here ^_^
-    GameplayCoreSceneSetupData_ctor(self, difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfo, colorScheme);
+    GameplayCoreSceneSetupData_ctor(self, difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfo, colorScheme, mainSettingsModel);
 
     bool firstActivation = false;
     if (Main::config.isEnabled) {
@@ -213,16 +209,18 @@ MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(GameplayCoreSceneSetupData_ctor, "", "Gamep
 
 MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &MenuTransitionsHelper::RestartGame, void, MenuTransitionsHelper* self, System::Action_1<Zenject::DiContainer*>* finishCallback)
 {
-    GameObject::Destroy(Main::SliceDetailsUI->UIScreen->get_gameObject());
-    delete Main::SliceDetailsUI;
-    Main::SliceDetailsUI = nullptr;
+    if (Main::SliceDetailsUI != nullptr){
+        GameObject::Destroy(Main::SliceDetailsUI->UIScreen->get_gameObject());
+        delete Main::SliceDetailsUI;
+        Main::SliceDetailsUI = nullptr;
+    }
     MenuTransitionsHelper_RestartGame(self, finishCallback);
 }
 
 //ha ha funny skilly issue
 MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self){
     levelview(self);
-    self->practiceButton->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText(skillIssue);
+    self->get_practiceButton()->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText("Skill Issue");
 }
 
 

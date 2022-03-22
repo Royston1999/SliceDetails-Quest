@@ -24,7 +24,7 @@ void SliceDetails::HoverClickHelper::Awake(){
     currentCollider = nullptr;
     grabbingHandle = false;
     hoveringHandle = false;
-    hoverHandleMat = UnityEngine::Material::New_ctor(UnityEngine::Shader::Find(il2cpp_utils::newcsstr("Hidden/Internal-DepthNormalsTexture")));
+    hoverHandleMat = UnityEngine::Material::New_ctor(UnityEngine::Shader::Find("Hidden/Internal-DepthNormalsTexture"));
 }
 
 void SliceDetails::HoverClickHelper::Init(VRUIControls::VRPointer* pointer, UnityEngine::GameObject* handle){
@@ -35,32 +35,32 @@ void SliceDetails::HoverClickHelper::Init(VRUIControls::VRPointer* pointer, Unit
 
 void SliceDetails::HoverClickHelper::Update(){
     if(UnityEngine::Physics::Raycast(vrPointer->get_vrController()->get_position(), vrPointer->get_vrController()->get_forward(), hit, 100)){
-        if(to_utf8(csstrtostr(hit.get_collider()->get_name())).substr(0, 12).compare("gridcollider") == 0 && !grabbingHandle){
+        if(static_cast<std::string>(hit.get_collider()->get_name()).substr(0, 12).compare("gridcollider") == 0 && !grabbingHandle){
             if (isHit && currentCollider && currentCollider != hit.get_collider()->get_transform()){
                 panelUI->image->GetComponent<UnityEngine::UI::Image*>()->set_color(UnityEngine::Color::get_gray());
-                hintController->hoverHintPanel->Hide();
+                hintController->dyn__hoverHintPanel()->Hide();
                 panelUI = nullptr;
                 isHit = false;
             }
             if (!isHit){
-                panelUI = SliceDetails::Main::SliceDetailsUI->panelImages[std::stoi(to_utf8(csstrtostr(hit.get_collider()->get_name())).substr(13, 2))];
+                panelUI = SliceDetails::Main::SliceDetailsUI->panelImages[std::stoi(static_cast<std::string>(hit.get_collider()->get_name()).substr(13, 2))];
                 currentCollider = hit.get_collider()->get_transform();
-                if (!SliceDetails::Main::SliceDetailsUI->modal->isShown && SliceDetails::Main::SliceDetailsUI->gridNotes[panelUI->index]->cutCount != 0){
+                if (!SliceDetails::Main::SliceDetailsUI->modal->dyn__isShown() && SliceDetails::Main::SliceDetailsUI->gridNotes[panelUI->index]->cutCount != 0){
                     isHit = true;
                     panelUI->image->set_color(UnityEngine::Color(0.70f, 0.70f, 0.70f, 1.0f));
                     hintController->SetupAndShowHintPanel(panelUI->hoverHint);
                     panelUI->hoverHint->set_enabled(true);
                     panelUI->hoverHint->get_gameObject()->set_active(true);
-                    hintController->hoverHintPanel->get_transform()->set_localScale({0.6f, 0.6f, 0.0f});
-                    hintController->hoverHintPanel->get_transform()->set_position(panelUI->hoverHint->get_transform()->get_position());
-                    hintController->hoverHintPanel->get_transform()->Translate({0.0f, 0.22f, 0.0f}, UnityEngine::Space::Self);
+                    hintController->dyn__hoverHintPanel()->get_transform()->set_localScale({0.6f, 0.6f, 0.0f});
+                    hintController->dyn__hoverHintPanel()->get_transform()->set_position(panelUI->hoverHint->get_transform()->get_position());
+                    hintController->dyn__hoverHintPanel()->get_transform()->Translate({0.0f, 0.22f, 0.0f}, UnityEngine::Space::Self);
                 }
                 else panelUI = nullptr;
             }
         }
-        else if (isHit && !SliceDetails::Main::SliceDetailsUI->modal->isShown){
+        else if (isHit && !SliceDetails::Main::SliceDetailsUI->modal->dyn__isShown()){
             panelUI->image->set_color(UnityEngine::Color::get_gray());
-            hintController->hoverHintPanel->Hide();
+            hintController->dyn__hoverHintPanel()->Hide();
             panelUI = nullptr;
             isHit = false;
         }
@@ -76,9 +76,9 @@ void SliceDetails::HoverClickHelper::Update(){
         }
     }
     else {
-        if (isHit && !SliceDetails::Main::SliceDetailsUI->modal->isShown){
+        if (isHit && !SliceDetails::Main::SliceDetailsUI->modal->dyn__isShown()){
             panelUI->image->GetComponent<UnityEngine::UI::Image*>()->set_color(UnityEngine::Color::get_gray());
-            hintController->hoverHintPanel->Hide();
+            hintController->dyn__hoverHintPanel()->Hide();
             panelUI = nullptr;
             isHit = false;
         }
@@ -94,12 +94,12 @@ void SliceDetails::HoverClickHelper::Update(){
         panelUI->image->set_color(UnityEngine::Color::get_gray());
         SliceDetails::Main::SliceDetailsUI->updateGridNotesInfo(panelUI->index);
         SliceDetails::Main::SliceDetailsUI->modal->Show(true, true, nullptr);
-        hintController->hoverHintPanel->Hide();
+        hintController->dyn__hoverHintPanel()->Hide();
         panelUI = nullptr;
         isHit = false;
         modalLocked = true;
     }
-    if (!SliceDetails::Main::SliceDetailsUI->modal->isShown && !modalLocked && !notClickedModal) notClickedModal = true;
+    if (!SliceDetails::Main::SliceDetailsUI->modal->dyn__isShown() && !modalLocked && !notClickedModal) notClickedModal = true;
     if (justClosedModal) modalLocked = false;
     if (grabbingController) outOfRange = true;
 }
@@ -130,7 +130,7 @@ void SliceDetails::HoverClickHelper::LateUpdate(){
         outOfRange = false;
         grabbingHandle = false;
     } 
-    if (isHit && SliceDetails::Main::SliceDetailsUI->modal->isShown) isHit = false; 
+    if (isHit && SliceDetails::Main::SliceDetailsUI->modal->dyn__isShown()) isHit = false; 
     
 }
 

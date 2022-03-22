@@ -7,7 +7,7 @@ using namespace UnityEngine;
 namespace SliceDetails{
     void SliceDetailsUI::createGridIndicator(UnityEngine::Transform* parent){
         auto* screen = QuestUI::BeatSaberUI::CreateFloatingScreen({300.0f, 200.0f}, {0.0f, 1.0f, 1.0f}, {0, 0, 0}, 0.0f, true, false, 0);
-        screen->GetComponent<QuestUI::FloatingScreen*>()->bgGo->GetComponentInChildren<QuestUI::Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("round-rect-panel"), 0.985f);
+        screen->GetComponent<QuestUI::FloatingScreen*>()->bgGo->GetComponentInChildren<QuestUI::Backgroundable*>()->ApplyBackgroundWithAlpha("round-rect-panel", 0.985f);
         auto* vert = QuestUI::BeatSaberUI::CreateVerticalLayoutGroup(screen->get_transform());
         auto* line1 = QuestUI::BeatSaberUI::CreateHorizontalLayoutGroup(vert->get_transform());
         auto* line2 = QuestUI::BeatSaberUI::CreateHorizontalLayoutGroup(vert->get_transform());
@@ -15,7 +15,7 @@ namespace SliceDetails{
 
         line1->set_spacing(60.8f); line2->set_spacing(60.8f); line3->set_spacing(60.8f); vert->set_spacing(-5.5f);
 
-        GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(reinterpret_cast<custom_types::Helpers::enumeratorT*>(custom_types::Helpers::CoroutineHelper::New(createGridDots(line1, line2, line3))));
+        GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::CoroutineHelper::New(createGridDots(line1, line2, line3)));
 
         screen->get_transform()->set_position(screen->get_transform()->get_localPosition() + Vector3(0.0f, 15.0f, -1.2f));
         screen->get_transform()->SetParent(parent, false);
@@ -53,7 +53,7 @@ namespace SliceDetails{
 
         rightLine1->set_spacing(9.4f); rightLine2->set_spacing(9.4f); rightLine3->set_spacing(9.4f); rightSide->set_spacing(9.4f);
 
-        GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(reinterpret_cast<custom_types::Helpers::enumeratorT*>(custom_types::Helpers::CoroutineHelper::New(createNotes(leftLine1, leftLine2, leftLine3, rightLine1, rightLine2, rightLine3))));
+        GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::CoroutineHelper::New(createNotes(leftLine1, leftLine2, leftLine3, rightLine1, rightLine2, rightLine3)));
     }
 
     custom_types::Helpers::Coroutine SliceDetailsUI::createNotes(HorizontalLayoutGroup* leftLine1, HorizontalLayoutGroup* leftLine2, HorizontalLayoutGroup* leftLine3, HorizontalLayoutGroup* rightLine1, HorizontalLayoutGroup* rightLine2, HorizontalLayoutGroup* rightLine3)
@@ -80,11 +80,11 @@ namespace SliceDetails{
                 modalNotes[i]->noteCutArrow->get_transform()->set_localPosition({realOffset * (float)std::cos(realAngle * M_PI / 180), realOffset * (float)std::sin(realAngle * M_PI / 180), 0.0f});
                 modalNotes[i]->cutDistanceImage->get_transform()->set_localRotation(UnityEngine::Quaternion::Euler({0.0f, 0.0f, realAngle}));
                 modalNotes[i]->cutDistanceImage->get_transform()->set_localPosition(modalNotes[i]->noteCutArrow->get_transform()->get_localPosition() / 2);
-                modalNotes[i]->cutDistanceImage->get_transform()->set_localScale({realOffset / 4.0f, modalNotes[i]->cutDistanceImage->get_transform()->get_localScale().y});
+                modalNotes[i]->cutDistanceImage->get_transform()->set_localScale({realOffset / 4.0f, modalNotes[i]->cutDistanceImage->get_transform()->get_localScale().y, 0.0f});
                 // modalNotes[i]->cutDistanceImage->set_color(i > 8 ? Color(1.0f-rightHand.r, 1.0f-rightHand.g, 1.0f-rightHand.b, 0.75f) : Color(1.0f-leftHand.r, 1.0f-leftHand.g, 1.0f-leftHand.b, 0.75f));
                 modalNotes[i]->noteBackground->set_color(i > 8 ? rightHand : leftHand);
                 modalNotes[i]->hint->get_gameObject()->set_active(true);
-                modalNotes[i]->hint->set_text(il2cpp_utils::createcsstr(gridNotes[index]->notes[i]->getAverageValueStringData()));
+                modalNotes[i]->hint->set_text(gridNotes[index]->notes[i]->getAverageValueStringData());
             }
             else{
                 modalNotes[i]->cutDistanceImage->get_gameObject()->set_active(false);
@@ -98,7 +98,7 @@ namespace SliceDetails{
 
     void SliceDetailsUI::updatePanelImages(){
         for (int i = 0; i<12; i++){
-            panelImages[i]->hoverHint->set_text(il2cpp_utils::createcsstr(gridNotes[i]->cutCount != 0 ? gridNotes[i]->getAverageValueStringData() : ""));
+            panelImages[i]->hoverHint->set_text(gridNotes[i]->cutCount != 0 ? gridNotes[i]->getAverageValueStringData() : "");
             panelImages[i]->set_panelText(gridNotes[i]->cutCount != 0 ?  gridNotes[i]->getAverageScoreString() : "");
         }
     }
@@ -108,7 +108,7 @@ namespace SliceDetails{
         UIScreen->GetComponent<UnityEngine::Canvas*>()->set_sortingOrder(31);
         UnityEngine::GameObject::DontDestroyOnLoad(UIScreen);
         screenhandle = UIScreen->GetComponent<QuestUI::FloatingScreen*>()->handle;
-        UIScreen->GetComponent<QuestUI::FloatingScreen*>()->bgGo->GetComponentInChildren<QuestUI::Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("round-rect-panel"), 1.0f);
+        UIScreen->GetComponent<QuestUI::FloatingScreen*>()->bgGo->GetComponentInChildren<QuestUI::Backgroundable*>()->ApplyBackgroundWithAlpha("round-rect-panel", 1.0f);
         screenhandle->get_transform()->set_localPosition(UnityEngine::Vector3(0.0f, -15.0f, 0.0f));
         screenhandle->get_transform()->set_localScale(UnityEngine::Vector3(3.3f, 3.3f, 3.3f));
         QuestUI::FloatingScreen* thing = UIScreen->GetComponent<QuestUI::FloatingScreen*>();
@@ -120,14 +120,14 @@ namespace SliceDetails{
 
         line1->set_spacing(8.8f); line2->set_spacing(8.8f); line3->set_spacing(8.8f); vert->set_spacing(-5.5f);
 
-        UINoGlow = QuestUI::ArrayUtil::First(UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::Material*>(), [](UnityEngine::Material* x) { return to_utf8(csstrtostr(x->get_name())) == "UINoGlow"; });
-        GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(reinterpret_cast<custom_types::Helpers::enumeratorT*>(custom_types::Helpers::CoroutineHelper::New(createPanelNotes(line1, line2, line3))));
+        UINoGlow = QuestUI::ArrayUtil::First(UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::Material*>(), [](UnityEngine::Material* x) { return x->get_name() == "UINoGlow"; });
+        GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::CoroutineHelper::New(createPanelNotes(line1, line2, line3)));
 
         auto* screenthingidk = thing->get_gameObject()->AddComponent<HMUI::Screen*>();
         createModalUI(thing->get_transform());
         createGridIndicator(modal->get_transform());
 
-        auto* normalpointer = Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>()->get(0);
+        auto* normalpointer = Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>().get(0);
         hoverClickHelper = SliceDetails::addHoverClickHelper(normalpointer, screenhandle, thing);
         modalHelper = SliceDetails::addModalHelper(normalpointer, thing);
     }
@@ -160,7 +160,7 @@ namespace SliceDetails{
         modal->Show(false, true, nullptr);
         modal->Hide(false, nullptr);
         
-        auto* pausepointer = Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>()->get(1);
+        auto* pausepointer = Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>().get(1);
         auto* mover = pausepointer->get_gameObject()->AddComponent<QuestUI::FloatingScreenMoverPointer*>();
         mover->Init(UIScreen->GetComponent<QuestUI::FloatingScreen*>(), pausepointer);
         hoverClickHelper->vrPointer = pausepointer;
@@ -176,7 +176,7 @@ namespace SliceDetails{
         }
     }
     void SliceDetailsUI::onResultsScreenActivate(){
-        auto* pointer = Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>()->get(0);
+        auto* pointer = Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>().get(0);
         hoverClickHelper->vrPointer = pointer;
         modalHelper->vrPointer = pointer;
         hoverClickHelper->resetBools();

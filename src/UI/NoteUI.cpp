@@ -47,9 +47,9 @@ SliceDetails::NoteUI::NoteUI(UnityEngine::Transform* parent, UnityEngine::Sprite
     noteCutArrow = createImage(noteCutArrow, QuestUI::BeatSaberUI::Base64ToSprite(SliceDetails::Sprites::cut_arrow), transform);
     collider = UnityEngine::GameObject::New_ctor()->AddComponent<UnityEngine::Canvas*>()->get_gameObject()->AddComponent<UnityEngine::BoxCollider*>();
     collider->set_size({12.0f, 12.0f, 0.0f});
-    collider->set_name(il2cpp_utils::createcsstr("modalcollider"));
+    collider->set_name("modalcollider");
     hint = QuestUI::BeatSaberUI::AddHoverHint(collider->get_gameObject(), std::to_string(rotation) + " KNOB");
-    hint->hoverHintController = nullptr;
+    hint->dyn__hoverHintController() = nullptr;
     hint->set_enabled(true);
     collider->get_transform()->SetParent(transform, false);
     hint->get_transform()->SetParent(transform, false);

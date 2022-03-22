@@ -2,7 +2,7 @@
 #include "main.hpp"
 
 void SliceDetails::PanelUI::set_panelText(std::string string){
-    text->set_text(il2cpp_utils::createcsstr(string));
+    text->set_text(string);
 }
 
 SliceDetails::PanelUI::PanelUI(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, int index){
@@ -13,7 +13,7 @@ SliceDetails::PanelUI::PanelUI(UnityEngine::Transform* parent, UnityEngine::Spri
     image->set_material(SliceDetails::Main::SliceDetailsUI->UINoGlow);
     image->set_sprite(sprite);
 
-    text = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("text"))->AddComponent<TMPro::TextMeshProUGUI*>();
+    text = UnityEngine::GameObject::New_ctor("text")->AddComponent<TMPro::TextMeshProUGUI*>();
     text->get_gameObject()->set_layer(1);
     text->set_isOverlay(true);
     text->set_fontSize(5.0f);
@@ -22,8 +22,8 @@ SliceDetails::PanelUI::PanelUI(UnityEngine::Transform* parent, UnityEngine::Spri
     auto* collider = mainCanvas->AddComponent<UnityEngine::BoxCollider*>();
     hoverHint = QuestUI::BeatSaberUI::AddHoverHint(collider->get_gameObject(), "knob knob fat cunt");
     collider->set_size({13.0f, 13.0f, 0.0f});
-    collider->set_name(il2cpp_utils::createcsstr("gridcollider " + std::to_string(index)));
-    hoverHint->hoverHintController = nullptr;
+    collider->set_name("gridcollider " + std::to_string(index));
+    hoverHint->dyn__hoverHintController() = nullptr;
 
     UnityEngine::RectTransform* rectTransform = (UnityEngine::RectTransform*)image->get_transform();
     rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));

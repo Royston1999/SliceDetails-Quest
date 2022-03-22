@@ -25,18 +25,18 @@ void SliceDetails::ModalHelper::Init(VRUIControls::VRPointer* pointer){
 
 void SliceDetails::ModalHelper::Update(){
     if(UnityEngine::Physics::Raycast(vrPointer->get_vrController()->get_position(), vrPointer->get_vrController()->get_forward(), hit, 100)){
-        if(to_utf8(csstrtostr(hit.get_collider()->get_name())).compare("modalcollider") == 0 && !SliceDetails::Main::SliceDetailsUI->hoverClickHelper->grabbingHandle){
+        if(static_cast<std::string>(hit.get_collider()->get_name()).compare("modalcollider") == 0 && !SliceDetails::Main::SliceDetailsUI->hoverClickHelper->grabbingHandle){
             if (!isHit){
                 hint = hit.get_collider()->get_transform()->get_parent()->GetComponentInChildren<HMUI::HoverHint*>();
-                if (SliceDetails::Main::SliceDetailsUI->modal->isShown){
+                if (SliceDetails::Main::SliceDetailsUI->modal->dyn__isShown()){
                     isHit = true;
                     hintController->SetupAndShowHintPanel(hint);
                     hint->set_enabled(true);
                     hint->get_gameObject()->set_active(true);
-                    hintController->hoverHintPanel->get_transform()->SetParent(SliceDetails::Main::SliceDetailsUI->modal->get_transform(), false);
-                    hintController->hoverHintPanel->get_transform()->set_localScale({0.6f, 0.6f, 0.0f});
-                    hintController->hoverHintPanel->get_transform()->set_position(hint->get_transform()->get_position());
-                    hintController->hoverHintPanel->get_transform()->Translate({0.0f, 0.21f, 0.0f}, UnityEngine::Space::Self);
+                    hintController->dyn__hoverHintPanel()->get_transform()->SetParent(SliceDetails::Main::SliceDetailsUI->modal->get_transform(), false);
+                    hintController->dyn__hoverHintPanel()->get_transform()->set_localScale({0.6f, 0.6f, 0.0f});
+                    hintController->dyn__hoverHintPanel()->get_transform()->set_position(hint->get_transform()->get_position());
+                    hintController->dyn__hoverHintPanel()->get_transform()->Translate({0.0f, 0.21f, 0.0f}, UnityEngine::Space::Self);
                 }
             }
         }
@@ -44,9 +44,9 @@ void SliceDetails::ModalHelper::Update(){
 }
 
 void SliceDetails::ModalHelper::LateUpdate(){
-    if (isHit && (!hit.get_collider() || to_utf8(csstrtostr(hit.get_collider()->get_name())).compare("modalcollider") != 0)){
+    if (isHit && (!hit.get_collider() || static_cast<std::string>(hit.get_collider()->get_name()).compare("modalcollider") != 0)){
         isHit = false;
-        hintController->hoverHintPanel->Hide();
+        hintController->dyn__hoverHintPanel()->Hide();
         hint = nullptr;
     }
 }
