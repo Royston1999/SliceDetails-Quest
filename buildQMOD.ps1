@@ -1,5 +1,5 @@
 Param(
-    [String] $qmodname="",
+    [String] $qmodname="slicedetails",
 
     [Parameter(Mandatory=$false)]
     [Switch] $clean,
