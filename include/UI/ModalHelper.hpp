@@ -17,13 +17,13 @@
 #include "HMUI/HoverHintController.hpp"
 #include "questui/shared/CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "VRUIControls/VRPointer.hpp"
+#include "UnityEngine/UI/Image.hpp"
 
 DECLARE_CLASS_CODEGEN(SliceDetails, ModalHelper, UnityEngine::MonoBehaviour,
 
     DECLARE_INSTANCE_FIELD(VRUIControls::VRPointer*, vrPointer);
-    DECLARE_INSTANCE_FIELD(HMUI::HoverHint*, hint);
     DECLARE_INSTANCE_FIELD(UnityEngine::RaycastHit, hit);
-    DECLARE_INSTANCE_FIELD(HMUI::HoverHintController*, hintController);
+    DECLARE_INSTANCE_FIELD(UnityEngine::UI::Image*, border);
     DECLARE_INSTANCE_FIELD(bool, isHit);
 
     DECLARE_INSTANCE_METHOD(void, Init, VRUIControls::VRPointer* pointer);

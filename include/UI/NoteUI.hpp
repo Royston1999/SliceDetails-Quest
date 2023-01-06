@@ -30,8 +30,8 @@ namespace SliceDetails{
             UnityEngine::UI::Image* noteCutArrow;
             UnityEngine::BoxCollider* collider; // might not be needed
             UnityEngine::UI::Image* cutDistanceImage;
-            HMUI::HoverHint* hint;
+            std::string hoverText;
             int rot;
-            NoteUI(UnityEngine::Transform* parent, UnityEngine::Sprite* noteArrowSprite, int rotation);
+            NoteUI(UnityEngine::Transform* parent, UnityEngine::Sprite* noteArrowSprite, int rotation, int index);
     };
 }

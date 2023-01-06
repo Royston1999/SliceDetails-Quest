@@ -25,6 +25,7 @@ namespace SliceDetails{
             custom_types::Helpers::Coroutine createPanelNotes(HorizontalLayoutGroup* line1, HorizontalLayoutGroup* line2, HorizontalLayoutGroup* line3);
             void createGridIndicator(UnityEngine::Transform* parent);
             void createModalUI(UnityEngine::Transform* parent);
+            void createStatsPanel();
             void updateGridNotesInfo(int index);
             void updatePanelImages();
             void initScreen();
@@ -39,6 +40,7 @@ namespace SliceDetails{
             SliceDetails::GridInfo* gridNotes[12];
             UnityEngine::UI::Image* gridDots[12];
             SliceDetails::PanelUI* panelImages[12];
+            UnityEngine::UI::Image* hoverStatsPanel;
             UnityEngine::Color leftHand;
             UnityEngine::Color rightHand;
             UnityEngine::GameObject* screenhandle = nullptr;

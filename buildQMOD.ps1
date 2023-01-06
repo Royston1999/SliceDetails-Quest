@@ -17,6 +17,8 @@ if ($help -eq $true) {
 
 $mod = "./mod.json"
 
+& $PSScriptRoot/build.ps1 -clean:$clean
+
 & $PSScriptRoot/validate-modjson.ps1
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE

@@ -32,6 +32,26 @@ namespace SliceDetails{
         co_return;
     }
 
+    void SliceDetailsUI::createStatsPanel(){
+        auto sprite = QuestUI::BeatSaberUI::Base64ToSprite(SliceDetails::Sprites::gradient_border);
+        auto* GO = QuestUI::BeatSaberUI::CreateCanvas();
+        hoverStatsPanel = GO->AddComponent<UnityEngine::UI::Image*>();
+        hoverStatsPanel->set_material(SliceDetails::Main::SliceDetailsUI->UINoGlow);
+        hoverStatsPanel->set_sprite(sprite);
+
+        UnityEngine::RectTransform* rectTransform = (UnityEngine::RectTransform*)hoverStatsPanel->get_transform();
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_anchoredPosition({0.0f, 0.0f});
+        rectTransform->set_localScale({0.3f, 0.23f, 0.0f});
+        auto text = hoverStatsPanel->get_gameObject()->AddComponent<TMPro::TextMeshProUGUI*>();
+        text = QuestUI::BeatSaberUI::CreateText(rectTransform, "", false, {0.0f, 0.0f});
+        text->set_color(UnityEngine::Color::get_black());
+        text->set_fontSize(10.0f);
+        text->set_alignment(TMPro::TextAlignmentOptions::Center);
+        hoverStatsPanel->get_gameObject()->set_active(false);
+    }
+
     void SliceDetailsUI::createModalUI(UnityEngine::Transform* parent){
         modal = QuestUI::BeatSaberUI::CreateModal(parent, UnityEngine::Vector2(70, 32), [](HMUI::ModalView *modal) {}, true);
         modal->get_transform()->Translate({0.0f, 0.0f, -0.01f});
@@ -61,7 +81,7 @@ namespace SliceDetails{
         int rots[9] = {225, 180, 135, 270, 0, 90, 315, 0, 45};
         for (int i=0; i<18; i++){
             auto* layout = i<3 ? leftLine1 : i<6 ? leftLine2 : i<9 ? leftLine3 : i<12 ? rightLine1 : i<15 ? rightLine2 : i<18 ? rightLine3 : nullptr;
-            modalNotes[i] = new NoteUI(layout->get_transform(), QuestUI::BeatSaberUI::Base64ToSprite(i%9 == 4 ? Sprites::dot : Sprites::bloq_arrow), rots[i%9]);
+            modalNotes[i] = new NoteUI(layout->get_transform(), QuestUI::BeatSaberUI::Base64ToSprite(i%9 == 4 ? Sprites::dot : Sprites::bloq_arrow), rots[i%9], i);
             co_yield nullptr;
         }
         co_return;
@@ -83,12 +103,11 @@ namespace SliceDetails{
                 modalNotes[i]->cutDistanceImage->get_transform()->set_localScale({realOffset / 4.0f, modalNotes[i]->cutDistanceImage->get_transform()->get_localScale().y, 0.0f});
                 // modalNotes[i]->cutDistanceImage->set_color(i > 8 ? Color(1.0f-rightHand.r, 1.0f-rightHand.g, 1.0f-rightHand.b, 0.75f) : Color(1.0f-leftHand.r, 1.0f-leftHand.g, 1.0f-leftHand.b, 0.75f));
                 modalNotes[i]->noteBackground->set_color(i > 8 ? rightHand : leftHand);
-                modalNotes[i]->hint->get_gameObject()->set_active(true);
-                modalNotes[i]->hint->set_text(gridNotes[index]->notes[i]->getAverageValueStringData());
+                modalNotes[i]->hoverText = gridNotes[index]->notes[i]->getAverageValueStringData();
             }
             else{
                 modalNotes[i]->cutDistanceImage->get_gameObject()->set_active(false);
-                modalNotes[i]->hint->get_gameObject()->set_active(false);
+                modalNotes[i]->hoverText.clear();
                 modalNotes[i]->noteBackground->set_color(UnityEngine::Color::get_gray());
                 modalNotes[i]->noteCutArrow->get_gameObject()->set_active(false);
             }
@@ -98,7 +117,7 @@ namespace SliceDetails{
 
     void SliceDetailsUI::updatePanelImages(){
         for (int i = 0; i<12; i++){
-            panelImages[i]->hoverHint->set_text(gridNotes[i]->cutCount != 0 ? gridNotes[i]->getAverageValueStringData() : "");
+            panelImages[i]->hoverText = gridNotes[i]->cutCount != 0 ? gridNotes[i]->getAverageValueStringData() : "";
             panelImages[i]->set_panelText(gridNotes[i]->cutCount != 0 ?  gridNotes[i]->getAverageScoreString() : "");
         }
     }
@@ -126,6 +145,7 @@ namespace SliceDetails{
         auto* screenthingidk = thing->get_gameObject()->AddComponent<HMUI::Screen*>();
         createModalUI(thing->get_transform());
         createGridIndicator(modal->get_transform());
+        createStatsPanel();
 
         auto* normalpointer = Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>().get(0);
         hoverClickHelper = SliceDetails::addHoverClickHelper(normalpointer, screenhandle, thing);

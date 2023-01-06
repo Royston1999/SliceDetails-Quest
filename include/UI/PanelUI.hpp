@@ -37,7 +37,7 @@ namespace SliceDetails{
         public:
             TMPro::TextMeshProUGUI* text;
             UnityEngine::UI::Image* image;
-            HMUI::HoverHint* hoverHint;
+            std::string hoverText;
             int index;
             PanelUI(UnityEngine::Transform* parent, UnityEngine::Sprite* image, int index);
             void set_panelText(std::string string);

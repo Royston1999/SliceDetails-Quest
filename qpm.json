@@ -4,7 +4,7 @@
 	"info": {
 	  "name": "Slice Details",
 	  "id": "slicedetails",
-	  "version": "1.1.1",
+	  "version": "1.1.2",
 	  "url": null,
 	  "additionalData": {
 		"overrideSoName": "libslicedetails.so"
@@ -13,17 +13,17 @@
 	"dependencies": [
 	  {
 		"id": "codegen",
-		"versionRange": "^0.25.0",
+		"versionRange": "^0.32.0",
 		"additionalData": {}
 	  },
 	  {
 		"id": "custom-types",
-		"versionRange": "^0.15.18",
+		"versionRange": "^0.15.22",
 		"additionalData": {}
 	  },
 	  {
 		"id": "beatsaber-hook",
-		"versionRange": "^3.10.0",
+		"versionRange": "^3.14.0",
 		"additionalData": {
 		  "extraFiles": [
 			"src/inline-hook"
@@ -32,7 +32,7 @@
 	  },
 	  {
 		"id": "questui",
-		"versionRange": "^0.16.4",
+		"versionRange": "^0.17.10",
 		"additionalData": {}
 	  },
 	  {

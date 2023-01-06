@@ -27,6 +27,7 @@
 #include "GlobalNamespace/MenuTransitionsHelper.hpp"
 #include "GlobalNamespace/MainSettingsModelSO.hpp"
 #include "GlobalNamespace/IDifficultyBeatmap.hpp"
+#include "GlobalNamespace/BeatmapDataCache.hpp"
 
 using namespace UnityEngine;
 using namespace GlobalNamespace;
@@ -75,16 +76,22 @@ MAKE_HOOK_MATCH(Unpause, &GamePause::Resume, void, GlobalNamespace::GamePause* s
 
 MAKE_HOOK_MATCH(Menubutton, &PauseMenuManager::MenuButtonPressed , void, PauseMenuManager* self) {
     Menubutton(self);
-    if (Main::config.isEnabled) Main::SliceDetailsUI->onUnPause();
+    if (Main::config.isEnabled) {
+        Main::SliceDetailsUI->onUnPause();
+        Main::SliceDetailsUI->refreshNoteData();
+    }
 }
 
 MAKE_HOOK_MATCH(Restartbutton, &PauseMenuManager::RestartButtonPressed, void, PauseMenuManager* self) {
     Restartbutton(self);
-    if (Main::config.isEnabled) Main::SliceDetailsUI->onUnPause();
+    if (Main::config.isEnabled) {
+        Main::SliceDetailsUI->onUnPause();
+        Main::SliceDetailsUI->refreshNoteData();
+    }
 }
 
-MAKE_HOOK_MATCH(Results, &ResultsViewController::Init, void, ResultsViewController* self, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, bool practice, bool newHighScore) {
-    Results(self, levelCompletionResults, transformedBeatmapData, difficultyBeatmap, practice, newHighScore);
+MAKE_HOOK_MATCH(Results, &ResultsViewController::DidActivate, void, ResultsViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+    Results(self, firstActivation, addedToHierarchy, screenSystemEnabling);
     if (Main::config.inResults) Main::SliceDetailsUI->onResultsScreenActivate();
 }
 
@@ -162,29 +169,29 @@ MAKE_HOOK_MATCH(OnNoteCut, &BeatmapObjectManager::HandleNoteControllerNoteWasCut
     }
     NoteInfo* temp = new NoteInfo();
     temp->addNewNoteData(noteIndex, notePosIndex, noteCutInfo.heldRef.cutDistanceToCenter, cutAngle, cutOffset);
-    dict.insert(std::make_pair(noteCutInfo.heldRef.dyn_noteData(), temp));
+    dict.insert(std::make_pair(noteCutInfo.heldRef.noteData, temp));
 }
 
 // this entire thing might not be necessary. edit: it was very much necessary
 MAKE_HOOK_MATCH(HandleSwingFinish, &CutScoreBuffer::HandleSaberSwingRatingCounterDidFinish, void, CutScoreBuffer* self, ISaberSwingRatingCounter* counter) {
     HandleSwingFinish(self, counter);
     if (!Main::config.isEnabled) return;
-    if (dict.find(self->get_noteCutInfo().dyn_noteData()) != dict.end()){
-        NoteInfo* notecutinfo = dict.find(self->get_noteCutInfo().dyn_noteData())->second;
+    if (dict.find(self->get_noteCutInfo().noteData) != dict.end()){
+        NoteInfo* notecutinfo = dict.find(self->get_noteCutInfo().noteData)->second;
         int preSwing, postSwing, offset;
         preSwing = self->get_beforeCutScore();
         postSwing = self->get_noteCutInfo().noteData->get_scoringType() == NoteData::ScoringType::BurstSliderHead ? 30 : self->get_afterCutScore();
         offset = self->get_centerDistanceCutScore();
         Main::SliceDetailsUI->gridNotes[(int)notecutinfo->preswing]->notes[(int)notecutinfo->postswing]->addNewNoteData(preSwing, postSwing, offset, notecutinfo->cutAngle, notecutinfo->cutOffset);
         Main::SliceDetailsUI->gridNotes[(int)notecutinfo->preswing]->addNewGridPosData(preSwing, postSwing, offset);
-        dict.erase(self->get_noteCutInfo().dyn_noteData());
+        dict.erase(self->get_noteCutInfo().noteData);
         delete notecutinfo;
     }
 }
 
-MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(GameplayCoreSceneSetupData_ctor, "", "GameplayCoreSceneSetupData", ".ctor", void, GameplayCoreSceneSetupData* self, IDifficultyBeatmap* difficultyBeatmap, IPreviewBeatmapLevel* previewBeatmapLevel, GameplayModifiers* gameplayModifiers, PlayerSpecificSettings* playerSpecificSettings, PracticeSettings* practiceSettings, bool useTestNoteCutSoundEffects, EnvironmentInfoSO* environmentInfo, ColorScheme* colorScheme, MainSettingsModelSO* mainSettingsModel)
+MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(GameplayCoreSceneSetupData_ctor, "", "GameplayCoreSceneSetupData", ".ctor", void, GameplayCoreSceneSetupData* self, IDifficultyBeatmap* difficultyBeatmap, IPreviewBeatmapLevel* previewBeatmapLevel, GameplayModifiers* gameplayModifiers, PlayerSpecificSettings* playerSpecificSettings, PracticeSettings* practiceSettings, bool useTestNoteCutSoundEffects, EnvironmentInfoSO* environmentInfo, ColorScheme* colorScheme, MainSettingsModelSO* mainSettingsModel, BeatmapDataCache* beatmapDataCache)
 {
-    GameplayCoreSceneSetupData_ctor(self, difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfo, colorScheme, mainSettingsModel);
+    GameplayCoreSceneSetupData_ctor(self, difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfo, colorScheme, mainSettingsModel, beatmapDataCache);
 
     bool firstActivation = false;
     if (Main::config.isEnabled) {
@@ -202,7 +209,7 @@ MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(GameplayCoreSceneSetupData_ctor, "", "Gamep
     }
     else if (!Main::config.isEnabled && Main::SliceDetailsUI != nullptr){
         GameObject::Destroy(Main::SliceDetailsUI->UIScreen->get_gameObject());
-        delete Main::SliceDetailsUI;
+        free(Main::SliceDetailsUI);
         Main::SliceDetailsUI = nullptr;
     }
 }

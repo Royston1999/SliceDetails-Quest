@@ -20,10 +20,8 @@ SliceDetails::PanelUI::PanelUI(UnityEngine::Transform* parent, UnityEngine::Spri
     text->set_alignment(TMPro::TextAlignmentOptions::Center);
 
     auto* collider = mainCanvas->AddComponent<UnityEngine::BoxCollider*>();
-    hoverHint = QuestUI::BeatSaberUI::AddHoverHint(collider->get_gameObject(), "knob knob fat cunt");
     collider->set_size({13.0f, 13.0f, 0.0f});
     collider->set_name("gridcollider " + std::to_string(index));
-    hoverHint->dyn__hoverHintController() = nullptr;
 
     UnityEngine::RectTransform* rectTransform = (UnityEngine::RectTransform*)image->get_transform();
     rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
@@ -37,9 +35,7 @@ SliceDetails::PanelUI::PanelUI(UnityEngine::Transform* parent, UnityEngine::Spri
     rectTransform->SetParent(mainCanvas->get_transform(), false);
     text->get_transform()->SetParent(mainCanvas->get_transform(), false);
     collider->get_transform()->SetParent(mainCanvas->get_transform(), false);
-    hoverHint->get_transform()->SetParent(mainCanvas->get_transform(), true);
     mainCanvas->get_transform()->SetParent(parent, false);
 
-    hoverHint->set_enabled(true);
     mainCanvas->set_active(true);
 }
