@@ -120,7 +120,7 @@ MAKE_HOOK_MATCH(UnMultiplayer, &GameServerLobbyFlowCoordinator::DidDeactivate, v
     if (Main::config.isEnabled && Main::SliceDetailsUI != nullptr) Main::SliceDetailsUI->onResultsScreenDeactivate();
 }
 
-MAKE_HOOK_MATCH(OnNoteCut, &BeatmapObjectManager::HandleNoteControllerNoteWasCut , void, BeatmapObjectManager* self, NoteController* noteController, ByRef<NoteCutInfo> noteCutInfo) {
+MAKE_HOOK_MATCH(OnNoteCut, &BeatmapObjectManager::HandleNoteControllerNoteWasCut, void, BeatmapObjectManager* self, NoteController* noteController, ByRef<NoteCutInfo> noteCutInfo) {
     OnNoteCut(self, noteController, noteCutInfo);
     if (!Main::config.isEnabled) return;
     if (noteController->get_noteData()->get_scoringType() == NoteData::ScoringType::BurstSliderElement) return;
@@ -227,7 +227,11 @@ MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &MenuTransitionsHelper::Resta
 //ha ha funny skilly issue
 MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self){
     levelview(self);
-    self->get_practiceButton()->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText("Skill Issue");
+    auto* text = self->get_practiceButton()->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
+    std::thread([text](){ 
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        text->SetText("Skill Issue");
+    }).detach();
 }
 
 
@@ -254,6 +258,6 @@ extern "C" void load() {
     INSTALL_HOOK(getLogger(), BackToMenuButtonPressed);
     INSTALL_HOOK(getLogger(), UnMultiplayer);
     INSTALL_HOOK(getLogger(), MenuTransitionsHelper_RestartGame);
-    INSTALL_HOOK(getLogger(), levelview);
+    // INSTALL_HOOK(getLogger(), levelview);
     getLogger().info("Installed all hooks!");
 }
