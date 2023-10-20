@@ -1,0 +1,15 @@
+<modal xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd' 
+    id='modal' size-delta-x='70' size-delta-y='32' clickerino-offerino-closerino='false' move-to-center='true'>
+    <horizontal>
+        <vertical spacing="9.4">
+            <horizontal spacing="9.4"/>
+            <horizontal spacing="9.4"/>
+            <horizontal spacing="9.4"/>
+        </vertical>
+        <vertical spacing="9.4">
+            <horizontal spacing="9.4"/>
+            <horizontal spacing="9.4"/>
+            <horizontal spacing="9.4"/>
+        </vertical>
+    </horizontal>
+</modal>

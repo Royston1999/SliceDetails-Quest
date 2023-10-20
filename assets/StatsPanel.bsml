@@ -1,0 +1,5 @@
+<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+    <image id="border" src="slicedetails_border_png">
+        <text id="text" italics="false"></text>
+    </image>
+</bg>

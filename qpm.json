@@ -1,47 +1,60 @@
 {
-	"sharedDir": "shared",
-	"dependenciesDir": "extern",
-	"info": {
-	  "name": "Slice Details",
-	  "id": "slicedetails",
-	  "version": "1.1.3",
-	  "url": null,
-	  "additionalData": {
-		"overrideSoName": "libslicedetails.so"
-	  }
-	},
-	"dependencies": [
-	  {
-		"id": "codegen",
-		"versionRange": "^0.33.0",
-		"additionalData": {}
-	  },
-	  {
-		"id": "custom-types",
-		"versionRange": "^0.15.23",
-		"additionalData": {}
-	  },
-	  {
-		"id": "beatsaber-hook",
-		"versionRange": "^3.14.0",
-		"additionalData": {
-		  "extraFiles": [
-			"src/inline-hook"
-		  ]
-		}
-	  },
-	  {
-		"id": "questui",
-		"versionRange": "^0.17.11",
-		"additionalData": {}
-	  },
-	  {
-		"id": "modloader",
-		"versionRange": "^1.2.3",
-		"additionalData": {}
-	  }
-	],
-	"additionalData": {
-		"includeQmod": false
-	}
-  }
+  "sharedDir": "shared",
+  "dependenciesDir": "extern",
+  "info": {
+    "name": "Slice Details",
+    "id": "slicedetails",
+    "version": "1.1.3",
+    "url": null,
+    "additionalData": {
+      "overrideSoName": "libslicedetails.so"
+    }
+  },
+  "dependencies": [
+    {
+      "id": "codegen",
+      "versionRange": "^0.33.0",
+      "additionalData": {}
+    },
+    {
+      "id": "custom-types",
+      "versionRange": "^0.15.23",
+      "additionalData": {}
+    },
+    {
+      "id": "beatsaber-hook",
+      "versionRange": "^3.14.0",
+      "additionalData": {
+        "extraFiles": [
+          "src/inline-hook"
+        ]
+      }
+    },
+    {
+      "id": "modloader",
+      "versionRange": "^1.2.3",
+      "additionalData": {}
+    },
+    {
+      "id": "bsml",
+      "versionRange": "=0.3.3",
+      "additionalData": {}
+    },
+    {
+      "id": "lapiz",
+      "versionRange": "^0.1.11",
+      "additionalData": {}
+    },
+    {
+      "id": "config-utils",
+      "versionRange": "^1.1.0",
+      "additionalData": {}
+    },
+    {
+      "id": "fmt",
+      "versionRange": "^10.0.0",
+      "additionalData": {}
+    }
+  ],
+  "workspace": null
+}

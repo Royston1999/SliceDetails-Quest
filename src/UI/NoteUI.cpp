@@ -1,55 +1,54 @@
 #include "UI/NoteUI.hpp"
+#include "UnityEngine/Quaternion.hpp"
+#include "bsml/shared/Helpers/getters.hpp"
+#include "UnityEngine/Texture2D.hpp"
+#include "UnityEngine/FilterMode.hpp"
+#include "bsml/shared/Helpers/utilities.hpp"
 #include "main.hpp"
+#include "UnityEngine/Canvas.hpp"
+#include "UnityEngine/AdditionalCanvasShaderChannels.hpp"
+#include "assets.hpp"
 
-UnityEngine::UI::Image* createImage(UnityEngine::UI::Image* img, UnityEngine::Sprite* sprite, UnityEngine::Transform* parent){
-    auto* GO = QuestUI::BeatSaberUI::CreateCanvas();
-    img = GO->AddComponent<UnityEngine::UI::Image*>();
-    img->set_material(SliceDetails::Main::SliceDetailsUI->UINoGlow);
-    img->set_sprite(sprite);
+DEFINE_TYPE(SliceDetails, NoteUI)
 
-    UnityEngine::RectTransform* rectTransform = (UnityEngine::RectTransform*)img->get_transform();
-    rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
-    rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
-    rectTransform->set_anchoredPosition({0.0f, 0.0f});
-    rectTransform->set_sizeDelta({4, 4});
-    rectTransform->set_localScale({4.0f, 4.0f, 0.0f});
-    rectTransform->SetParent(parent, false);
-    return img;
-}
+namespace SliceDetails
+{
+    using namespace UnityEngine;
 
-UnityEngine::UI::Image* createTexture(UnityEngine::UI::Image* img, UnityEngine::Transform* parent){
-    auto* GO = QuestUI::BeatSaberUI::CreateCanvas();
-    img = GO->AddComponent<UnityEngine::UI::Image*>();
-    UnityEngine::Texture2D* texture = UnityEngine::Texture2D::New_ctor(2, 2);
-    texture->set_filterMode(UnityEngine::FilterMode::Point);
-    texture->Apply();
-    img->set_material(SliceDetails::Main::SliceDetailsUI->UINoGlow);
-	img->set_sprite(UnityEngine::Sprite::Create(texture, UnityEngine::Rect(0, 0, texture->get_width(), texture->get_height()), UnityEngine::Vector2(0, 0), 100.0f, 1u, UnityEngine::SpriteMeshType::FullRect, UnityEngine::Vector4(0.0f, 0.0f, 0.0f, 0.0f), false));
-    
-    UnityEngine::RectTransform* rectTransform = (UnityEngine::RectTransform*)img->get_transform();
-    rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
-    rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
-    rectTransform->set_anchoredPosition({0.0f, 0.0f});
-    rectTransform->set_sizeDelta({4, 4});
-    rectTransform->set_localScale({4.0f, 4.0f, 0.0f});
-    rectTransform->SetParent(parent, false);
-    img->set_color(UnityEngine::Color(0.0f, 1.0f, 0.0f, 0.94f));
-    return img;
-}
+    void NoteUI::ctor(int rotation, int index)
+    {
+        rot = rotation;
+        this->index = index;
+    }
 
-SliceDetails::NoteUI::NoteUI(UnityEngine::Transform* parent, UnityEngine::Sprite* noteArrowSprite, int rotation, int index){
-    rot = rotation;
-    auto* transform = QuestUI::BeatSaberUI::CreateCanvas()->get_transform();
-    transform->set_name(std::to_string(index));
-    transform->set_localScale({0.46f, 0.46f, 0.0f});
-    noteBackground = createImage(noteBackground, QuestUI::BeatSaberUI::Base64ToSprite(SliceDetails::Sprites::bloq), transform);
-    noteArrow = createImage(noteArrow, noteArrowSprite, transform);
-    cutDistanceImage = createTexture(cutDistanceImage, transform);
-    noteCutArrow = createImage(noteCutArrow, QuestUI::BeatSaberUI::Base64ToSprite(SliceDetails::Sprites::cut_arrow), transform);
-    collider = UnityEngine::GameObject::New_ctor()->AddComponent<UnityEngine::Canvas*>()->get_gameObject()->AddComponent<UnityEngine::BoxCollider*>();
-    collider->set_size({12.0f, 12.0f, 0.0f});
-    collider->set_name("modalcollider");
-    collider->get_transform()->SetParent(transform, false);
-    transform->set_rotation(UnityEngine::Quaternion::Euler(0, 0, rotation));
-    transform->SetParent(parent, false);
+    void NoteUI::PostParse()
+    {
+        bloqLayout->get_transform()->set_rotation(Quaternion::Euler({0, 0, (float)rot}));
+        bloqLayout->get_transform()->set_localScale({0.46f, 0.46f, 0.0f});
+        bloqLayout->set_layer(5);
+        Canvas* cv = bloqLayout->AddComponent<Canvas*>();
+        cv->set_additionalShaderChannels(AdditionalCanvasShaderChannels::TexCoord1 | AdditionalCanvasShaderChannels::TexCoord2);
+        cv->set_sortingOrder(4);
+
+        noteArrow->set_sprite(BSML::Utilities::LoadSpriteRaw(index%9 == 4 ? IncludedAssets::dot_png : IncludedAssets::arrow_png));
+
+        noteBackground->set_material(BSML::Helpers::GetUINoGlowMat());
+        noteArrow->set_material(BSML::Helpers::GetUINoGlowMat());
+        cutDistanceImage->set_material(BSML::Helpers::GetUINoGlowMat());
+        noteCutArrow->set_material(BSML::Helpers::GetUINoGlowMat());
+
+        noteBackground->get_transform()->set_localScale({4.0f, 4.0f, 0.0f});
+        noteArrow->get_transform()->set_localScale({4.0f, 4.0f, 0.0f});
+        cutDistanceImage->get_transform()->set_localScale({4.0f, 4.0f, 0.0f});
+        noteCutArrow->get_transform()->set_localScale({4.0f, 4.0f, 0.0f});
+
+        Texture2D* texture = Texture2D::New_ctor(2, 2);
+        texture->set_filterMode(FilterMode::Point); 
+        texture->Apply();
+        cutDistanceImage->set_sprite(BSML::Utilities::LoadSpriteFromTexture(texture));
+        cutDistanceImage->set_color(Color(0.0f, 1.0f, 0.0f, 0.94f));
+
+        if (!collider) collider = bloqLayout->get_gameObject()->AddComponent<BoxCollider*>();
+        collider->set_size({14, 14, 0});
+    }
 }

@@ -1,38 +1,13 @@
 #pragma once
 
-#include "beatsaber-hook/shared/utils/logging.hpp"
-#include "beatsaber-hook/shared/config/config-utils.hpp"
-#include <string>
-#include <iostream>
+#include "config-utils/shared/config-utils.hpp"
+#include "UnityEngine/Vector3.hpp"
 
-
-std::optional<bool> getBool(rapidjson::Value& obj, std::string_view fieldName, bool required = false);
-std::optional<bool> setBool(rapidjson::Value& obj, std::string_view fieldName,  bool value, bool required = false);
-std::optional<float> getFloat(rapidjson::Value& obj, std::string_view fieldName, bool required = false);
-std::optional<float> setFloat(rapidjson::Value& obj, std::string_view fieldName, float value, bool required = false);
-
-namespace SliceDetails{
-    class Config {
-    public:
-        bool isEnabled;
-        bool inPause;
-        bool inResults;
-        float pausePosX;
-        float pausePosY;
-        float pausePosZ;
-        float pauseRotX;
-        float pauseRotY;
-        float pauseRotZ;
-        float resultPosX;
-        float resultPosY;
-        float resultPosZ;
-        float resultRotX;
-        float resultRotY;
-        float resultRotZ;
-    };
-}
-class ConfigHelper {
-public:
-    static bool LoadConfig(SliceDetails::Config& con, ConfigDocument& config);
-    static void CreateDefaultConfig(ConfigDocument& config);
-};
+DECLARE_CONFIG(SliceDetailsConfig,
+    CONFIG_VALUE(inPause, bool, "inPause", true);
+    CONFIG_VALUE(inResults, bool, "inResults", true);
+    CONFIG_VALUE(pausePos, UnityEngine::Vector3, "pausePos", UnityEngine::Vector3(-1.648f, 1.516f, 0.916f));
+    CONFIG_VALUE(pauseRot, UnityEngine::Vector3, "pauseRot", UnityEngine::Vector3(1.120f, 286.746f, 2.421f));
+    CONFIG_VALUE(resultsPos, UnityEngine::Vector3, "resultsPos", UnityEngine::Vector3(2.321f, 2.883f, 3.851f));
+    CONFIG_VALUE(resultsRot, UnityEngine::Vector3, "resultsRot", UnityEngine::Vector3(338.810f, 30.401f, 359.280f));
+)
