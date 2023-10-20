@@ -32,8 +32,6 @@ DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, PanelUIHelper, UnityEngine::MonoB
     private:
     PanelUI* panel;
     SliceDetailsFloatingScreen* sliceDetails;
-    GlobalNamespace::HapticFeedbackController* hapticFeedbackController;
-    Libraries::HM::HMLib::VR::HapticPresetSO* hapticFeedbackPresetSO;
     GlobalNamespace::Signal* buttonClickedSignal;
     void Vibrate(bool left);
 )

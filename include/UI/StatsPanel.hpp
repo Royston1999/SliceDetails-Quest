@@ -20,6 +20,8 @@ DECLARE_CLASS_CODEGEN(SliceDetails, StatsPanel, Il2CppObject,
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, text);
     DECLARE_DEFAULT_CTOR();
 
+    DECLARE_INSTANCE_METHOD(void, PostParse);
+
     public:
     void ActivatePanel(UnityEngine::Transform* parent, UnityEngine::Vector3 position, std::string text);
     void DeactivatePanel();

@@ -17,10 +17,12 @@
 #include "Utils/ModalCloseHandler.hpp"
 #include "UnityEngine/UI/RectMask2D.hpp"
 #include "Utils/NoteUIHelper.hpp"
+#include "UnityEngine/Space.hpp"
 
 DEFINE_TYPE(SliceDetails, SliceDetailsFloatingScreen);
 
 using namespace UnityEngine;
+using namespace UnityEngine::UI;
 
 namespace SliceDetails
 {
@@ -45,10 +47,10 @@ namespace SliceDetails
     {
         if (isInitialised) return;
         floatingScreen = BSML::FloatingScreen::CreateFloatingScreen({40.0f, 32.0f}, true, {0.0f, 1.0f, 1.0f}, Quaternion::Euler({0, 0, 0}), 0, false);
-        UnityEngine::Object::Destroy(floatingScreen->get_transform()->GetComponentInChildren<UnityEngine::UI::RectMask2D*>());
+        UnityEngine::Object::Destroy(floatingScreen->get_transform()->GetComponentInChildren<RectMask2D*>());
         screenhandle = floatingScreen->handle;
-        screenhandle->get_transform()->set_localPosition(Vector3(0.0f, -15.0f, 0.0f));
-        screenhandle->get_transform()->set_localScale(Vector3(3.3f, 3.3f, 3.3f));
+        screenhandle->get_transform()->set_localPosition({0.0f, -15.0f, 0.0f});
+        screenhandle->get_transform()->set_localScale({3.3f, 3.3f, 3.3f});
         auto rend = screenhandle->GetComponent<MeshRenderer*>();
         auto mat = Material::New_ctor(Shader::Find("Custom/SimpleLit"));
         mat->set_color(Color::get_white());
@@ -119,15 +121,16 @@ namespace SliceDetails
 
     void SliceDetailsFloatingScreen::UpdateCoordinates(BSML::FloatingScreen* self, const BSML::FloatingScreenHandleEventArgs& args)
     {
+        if (args.position.y < 0.5f) self->get_transform()->Translate(0.0f, (0.5 - args.position.y), 0.0f, Space::World);
         if (isPaused)
         {
-            getSliceDetailsConfig().pausePos.SetValue(args.position);
-            getSliceDetailsConfig().pauseRot.SetValue(const_cast<Quaternion&>(args.rotation).get_eulerAngles());
+            getSliceDetailsConfig().pausePos.SetValue(self->get_ScreenPosition());
+            getSliceDetailsConfig().pauseRot.SetValue(self->get_ScreenRotation().get_eulerAngles());
         }
         else
         {
-            getSliceDetailsConfig().resultsPos.SetValue(args.position);
-            getSliceDetailsConfig().resultsRot.SetValue(const_cast<Quaternion&>(args.rotation).get_eulerAngles());
+            getSliceDetailsConfig().resultsPos.SetValue(self->get_ScreenPosition());
+            getSliceDetailsConfig().resultsRot.SetValue(self->get_ScreenRotation().get_eulerAngles());
         }
     }
 
