@@ -84,8 +84,11 @@ namespace SliceDetails
     void SliceDetailsFloatingScreen::UpdatePanelScreen()
     {
         for (int i = 0; i<12; i++){
-            panelScreen->panelImages[i]->hoverText = gridNotes[i]->cutCount != 0 ? gridNotes[i]->getAverageValueStringData() : "";
-            panelScreen->panelImages[i]->noteCutText->SetText(gridNotes[i]->cutCount != 0 ?  gridNotes[i]->getAverageScoreString() : "");
+            bool hasData = gridNotes[i]->cutCount != 0;
+            PanelUI* panel = panelScreen->panelImages[i];
+            panel->hoverText = hasData ? gridNotes[i]->getAverageValueStringData() : std::string();
+            panel->noteCutText->get_gameObject()->set_active(hasData);
+            panel->noteCutText->SetText(hasData ? gridNotes[i]->getAverageScoreString() : std::string());
         }
     }
 
@@ -136,7 +139,7 @@ namespace SliceDetails
 
     void SliceDetailsFloatingScreen::OnPause()
     {
-        if (!getSliceDetailsConfig().inPause.GetValue()) return;
+        if (!DisplayInPause()) return;
         isPaused = true;
         floatingScreen->get_transform()->set_position(getSliceDetailsConfig().pausePos.GetValue());
         floatingScreen->get_transform()->set_rotation(Quaternion::Euler(getSliceDetailsConfig().pauseRot.GetValue()));
@@ -148,7 +151,7 @@ namespace SliceDetails
 
     void SliceDetailsFloatingScreen::OnUnPause()
     {
-        if (!getSliceDetailsConfig().inPause.GetValue()) return;
+        if (!DisplayInPause()) return;
         isPaused = false;
         panelScreen->noteUIModal->modal->Hide(true, nullptr);
         floatingScreen->get_gameObject()->set_active(false);
@@ -156,7 +159,7 @@ namespace SliceDetails
 
     void SliceDetailsFloatingScreen::OnResultsScreenActivate()
     {
-        if (!getSliceDetailsConfig().inResults.GetValue()) return;
+        if (!DisplayInResults()) return;
         floatingScreen->get_transform()->set_position(getSliceDetailsConfig().resultsPos.GetValue());
         floatingScreen->get_transform()->set_rotation(Quaternion::Euler(getSliceDetailsConfig().resultsRot.GetValue()));
         floatingScreen->get_gameObject()->set_active(true);
@@ -167,7 +170,7 @@ namespace SliceDetails
 
     void SliceDetailsFloatingScreen::OnResultsScreenDeactivate()
     {
-        if (!getSliceDetailsConfig().inResults.GetValue()) return;
+        if (!DisplayInResults()) return;
         panelScreen->noteUIModal->modal->Hide(true, nullptr);
         floatingScreen->get_gameObject()->set_active(false);
     }
@@ -183,6 +186,16 @@ namespace SliceDetails
     bool SliceDetailsFloatingScreen::IsEnabled()
     {
         return getSliceDetailsConfig().inResults.GetValue() || getSliceDetailsConfig().inPause.GetValue();
+    }
+
+    bool SliceDetailsFloatingScreen::DisplayInPause()
+    {
+        return getSliceDetailsConfig().inPause.GetValue();
+    }
+
+    bool SliceDetailsFloatingScreen::DisplayInResults()
+    {
+        return getSliceDetailsConfig().inResults.GetValue();
     }
 
     void SliceDetailsFloatingScreen::Dispose()

@@ -117,7 +117,7 @@ extern "C" void load() {
     zenjector->Install(Location::StandardPlayer, [](DiContainer* container)
     {
         auto screen = container->Resolve<SliceDetailsFloatingScreen*>();
-        if (!screen->IsEnabled()) return;
+        if (!screen->DisplayInPause()) return;
         container->BindInterfacesAndSelfTo<PauseController*>()->AsSingle();
     });
 

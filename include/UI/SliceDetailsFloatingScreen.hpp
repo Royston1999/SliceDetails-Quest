@@ -33,6 +33,8 @@ DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, SliceDetailsFloatingScreen, Il2Cp
     DECLARE_INSTANCE_METHOD(void, UpdatePanelScreen);
     DECLARE_INSTANCE_METHOD(void, UpdateNoteInfoUI, int index);
     DECLARE_INSTANCE_METHOD(bool, IsEnabled);
+    DECLARE_INSTANCE_METHOD(bool, DisplayInPause);
+    DECLARE_INSTANCE_METHOD(bool, DisplayInResults);
 
     public:
     void UpdateCoordinates(BSML::FloatingScreen* self, const BSML::FloatingScreenHandleEventArgs& args);
