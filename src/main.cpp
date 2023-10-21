@@ -26,6 +26,7 @@
 #include "Controllers/PauseController.hpp"
 #include "Controllers/MenuController.hpp"
 #include "UI/StatsPanel.hpp"
+#include "GlobalNamespace/GameplayCoreInstaller.hpp"
 
 using namespace UnityEngine;
 using namespace GlobalNamespace;
@@ -107,7 +108,7 @@ extern "C" void load() {
         FromNewComponentAsViewController(container->Bind<GridDotsViewController*>())->AsSingle();
     });
 
-    zenjector->Install(Location::GameCore, [](DiContainer* container)
+    zenjector->Install<GameplayCoreInstaller*>([](DiContainer* container)
     {
         auto screen = container->Resolve<SliceDetailsFloatingScreen*>();
         if (!screen->IsEnabled()) return;
