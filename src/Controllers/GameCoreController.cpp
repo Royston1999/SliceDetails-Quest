@@ -3,7 +3,6 @@
 #include "GlobalNamespace/ScoringElement.hpp"
 #include "System/Action_1.hpp"
 #include "GlobalNamespace/GoodCutScoringElement.hpp"
-#include "Utils/SliceDetailsCutFinishReceiver.hpp"
 #include "UnityEngine/Vector2.hpp"
 #include "UnityEngine/Vector3.hpp"
 #include "main.hpp"
@@ -32,13 +31,11 @@ namespace SliceDetails
         sliceDetails->InitialiseUI();
         sliceDetails->ClearNoteData();
 
-        onSwingFinish = std::bind(&GameCoreController::HandleSwingFinish, this, std::placeholders::_1);
-
-        scoreController->add_scoringForNoteStartedEvent(MakeDelegate<ScoringDelegate*>([this](ScoringElement* element)
+        scoreController->add_scoringForNoteFinishedEvent(MakeDelegate<ScoringDelegate*>([this](ScoringElement* element)
         {
             std::optional<GoodCutScoringElement*> goodCut = il2cpp_utils::try_cast<GoodCutScoringElement>(element);
             if (!goodCut.has_value()) return;
-            (*goodCut)->cutScoreBuffer->RegisterDidFinishReceiver(SliceDetailsCutDidFinishReceiver::NewInstance(onSwingFinish)->i_IReceiver());
+            HandleSwingFinish((*goodCut)->cutScoreBuffer);
         }));
     }
 

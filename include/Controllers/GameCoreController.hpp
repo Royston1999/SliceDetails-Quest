@@ -34,7 +34,6 @@ DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, GameCoreController, Il2CppObject,
 
     private:
     void HandleSwingFinish(GlobalNamespace::CutScoreBuffer* buffer);
-    std::function<void(GlobalNamespace::CutScoreBuffer*)> onSwingFinish;
 )
 
 #undef INTERFACES
