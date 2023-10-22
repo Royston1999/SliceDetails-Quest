@@ -28,6 +28,7 @@ namespace SliceDetails
 
     void GameCoreController::Initialize()
     {
+        getLogger().debug("Initialising GameCore Controller");
         sliceDetails->InitialiseUI();
         sliceDetails->ClearNoteData();
 
@@ -103,6 +104,6 @@ namespace SliceDetails
 
     void GameCoreController::Dispose()
     {
-
+        getLogger().debug("Disposing GameCore Controller");
     }
 }

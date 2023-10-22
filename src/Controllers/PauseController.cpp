@@ -2,6 +2,7 @@
 #include "EasyDelegate.hpp"
 #include "System/Action.hpp"
 #include "SliceDetailsConfig.hpp"
+#include "main.hpp"
 
 DEFINE_TYPE(SliceDetails, PauseController);
 
@@ -19,6 +20,7 @@ namespace SliceDetails
 
     void PauseController::Initialize()
     {
+        getLogger().debug("Initialising Pause Controller");
         gamePause->add_didPauseEvent(MakeDelegate<Action*>(&PauseController::OnPause, this));
         gamePause->add_willResumeEvent(MakeDelegate<Action*>(&PauseController::OnUnPause, this));
     }
@@ -35,6 +37,7 @@ namespace SliceDetails
 
     void PauseController::Dispose()
     {
+        getLogger().debug("Disposing Pause Controller");
         sliceDetails->OnUnPause();
     }
 }

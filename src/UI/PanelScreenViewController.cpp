@@ -14,7 +14,7 @@ namespace SliceDetails
         auto layouts = get_transform()->GetComponentsInChildren<UnityEngine::UI::HorizontalLayoutGroup*>();
         for (int i = 0; i < 12; i++)
         {
-            auto* layout = i<4 ? layouts[0] : i<8 ? layouts[1] : i<12 ? layouts[2] : nullptr;
+            auto* layout = layouts[(int)(i/4)];
             panelImages[i] = PanelUI::New_ctor(i);
             BSML::parse_and_construct(IncludedAssets::GridInfoUI_bsml, layout->get_transform(), panelImages[i]);
         }

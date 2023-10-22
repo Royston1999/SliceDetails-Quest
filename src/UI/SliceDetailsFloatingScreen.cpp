@@ -18,6 +18,7 @@
 #include "UnityEngine/UI/RectMask2D.hpp"
 #include "Utils/NoteUIHelper.hpp"
 #include "UnityEngine/Space.hpp"
+#include "main.hpp"
 
 DEFINE_TYPE(SliceDetails, SliceDetailsFloatingScreen);
 
@@ -46,6 +47,7 @@ namespace SliceDetails
     void SliceDetailsFloatingScreen::InitialiseUI()
     {
         if (isInitialised) return;
+        getLogger().debug("Creating Slice Details Screen");
         floatingScreen = BSML::FloatingScreen::CreateFloatingScreen({40.0f, 32.0f}, true, {0.0f, 1.0f, 1.0f}, Quaternion::Euler({0, 0, 0}), 0, false);
         UnityEngine::Object::Destroy(floatingScreen->get_transform()->GetComponentInChildren<RectMask2D*>());
         screenhandle = floatingScreen->handle;
@@ -185,7 +187,7 @@ namespace SliceDetails
 
     bool SliceDetailsFloatingScreen::IsEnabled()
     {
-        return getSliceDetailsConfig().inResults.GetValue() || getSliceDetailsConfig().inPause.GetValue();
+        return DisplayInResults() || DisplayInPause();
     }
 
     bool SliceDetailsFloatingScreen::DisplayInPause()
@@ -200,6 +202,7 @@ namespace SliceDetails
 
     void SliceDetailsFloatingScreen::Dispose()
     {
+        getLogger().debug("Disposing Slice Details Screen");
         isInitialised = false;
     }
 }

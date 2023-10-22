@@ -4,6 +4,7 @@
 #include "SliceDetailsConfig.hpp"
 #include "HMUI/ViewController_DidActivateDelegate.hpp"
 #include "HMUI/ViewController_DidDeactivateDelegate.hpp"
+#include "main.hpp"
 
 DEFINE_TYPE(SliceDetails, MenuController);
 
@@ -23,6 +24,7 @@ namespace SliceDetails
 
     void MenuController::Initialize()
     {
+        getLogger().debug("Initialising Menu Controller");
         using OnActivate = HMUI::ViewController::DidActivateDelegate;
         using OnDeActivate = HMUI::ViewController::DidDeactivateDelegate;
         results->add_didActivateEvent(MakeDelegate<OnActivate*>(&MenuController::OnResultsActivate, this));
@@ -43,6 +45,6 @@ namespace SliceDetails
 
     void MenuController::Dispose()
     {
-
+        getLogger().debug("Disposing Menu Controller");
     }
 }

@@ -24,26 +24,27 @@ namespace SliceDetails
 
     void NoteUIModal::PostParse()
     {
-        
+        modal->get_transform()->Translate({0.0f, 0.0f, -0.01f});
     }
 
     void NoteUIModal::InitialiseUI(UnityEngine::Transform* parent)
     {
+        getLogger().debug("Creating Modal Screen");
         BSML::parse_and_construct(IncludedAssets::NoteUIModal_bsml, parent, this);
-        modal->get_transform()->Translate({0.0f, 0.0f, -0.01f});
+        
         auto layouts = modal->get_transform()->GetComponentsInChildren<UI::HorizontalLayoutGroup*>();
         int rots[9] = {225, 180, 135, 270, 0, 90, 315, 0, 45};
         for (int i = 0; i < 18; i++)
         {    
-            auto* layout = i<3 ? layouts[1] : i<6 ? layouts[2] : i<9 ? layouts[3] : i<12 ? layouts[4] : i<15 ? layouts[5] : i<18 ? layouts[6] : nullptr;
+            auto* layout = layouts[(int)(i/3)+1];
             modalNotes[i] = NoteUI::New_ctor(rots[i%9], i);
-            auto note = modalNotes[i]->bloqLayout = GameObject::New_ctor("ModalNote");
+            auto note = modalNotes[i]->bloqLayout = GameObject::New_ctor("SliceDetailsModalNote");
             note->get_transform()->SetParent(layout->get_transform(), false);
             BSML::parse_and_construct(IncludedAssets::NoteInfoUI_bsml, note->get_transform(), modalNotes[i]);
         }
-        getLogger().info("oh shit");
-        auto gridDotsScreen = BSML::FloatingScreen::CreateFloatingScreen({12.0f, 8.0f}, false, {0.0f, 1.0f, 1.0f}, Quaternion::Euler({0, 0, 0}), 0, false);
-        
+
+        // this shouldn't really be a floating screen but nevermind
+        auto gridDotsScreen = BSML::FloatingScreen::CreateFloatingScreen({12.0f, 8.0f}, false, {0.0f, 1.0f, 1.0f}, Quaternion::Euler({0, 0, 0}), 0, false);    
         auto canvas = gridDotsScreen->get_transform()->GetComponentInChildren<Canvas*>();
         canvas->set_sortingOrder(31);
         auto backgroundGo = GameObject::New_ctor("bg");
