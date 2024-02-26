@@ -59,16 +59,16 @@ extern "C" void setup(ModInfo& info) {
 }
 
 //ha ha funny skilly issue
-// MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self) {
-//     levelview(self);
-//     auto* text = self->get_practiceButton()->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
-//     std::thread([text](){ 
-//         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-//         Lapiz::Utilities::MainThreadScheduler::Schedule([text]() {
-//             text->SetText("Skill Issue");
-//         });
-//     }).detach();
-// }
+MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self) {
+    levelview(self);
+    auto* text = self->get_practiceButton()->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
+    std::thread([text](){ 
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        Lapiz::Utilities::MainThreadScheduler::Schedule([text]() {
+            text->SetText("Skill Issue");
+        });
+    }).detach();
+}
 
 void DidActivate(HMUI::ViewController* self, bool firstActivation, bool two, bool three)
 {
