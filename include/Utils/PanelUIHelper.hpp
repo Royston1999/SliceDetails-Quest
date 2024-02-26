@@ -34,6 +34,7 @@ DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, PanelUIHelper, UnityEngine::MonoB
     SliceDetailsFloatingScreen* sliceDetails;
     GlobalNamespace::Signal* buttonClickedSignal;
     void Vibrate(bool left);
+    void UnFuckModal();
 )
 
 #undef INTERFACES

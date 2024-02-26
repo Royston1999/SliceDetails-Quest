@@ -9,7 +9,6 @@
 #include "bsml/shared/BSML/FloatingScreen/FloatingScreenHandleEventArgs.hpp"
 #include "bsml/shared/BSML/FloatingScreen/FloatingScreenHandle.hpp"
 
-#include "EasyDelegate.hpp"
 #include "bsml/shared/BSML/Components/Backgroundable.hpp"
 #include "UnityEngine/Canvas.hpp"
 #include "Utils/HandleHighlighter.hpp"

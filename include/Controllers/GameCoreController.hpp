@@ -15,9 +15,12 @@
 #include "GlobalNamespace/NoteCutInfo.hpp"
 #include "GlobalNamespace/CutScoreBuffer.hpp"
 #include "GlobalNamespace/IScoreController.hpp"
+#include "GlobalNamespace/ScoreController.hpp"
 #include "GlobalNamespace/NoteData.hpp"
 #include <map>
 #include "GlobalNamespace/ColorScheme.hpp"
+#include "DelegateUtils.hpp"
+#include "System/Action_1.hpp"
 
 #define INTERFACES {classof(System::IDisposable*), classof(Zenject::IInitializable*)} \
 
@@ -30,10 +33,11 @@ DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, GameCoreController, Il2CppObject,
 
     public:
     SliceDetails::SliceDetailsFloatingScreen* sliceDetails;
-    GlobalNamespace::IScoreController* scoreController;
+    GlobalNamespace::ScoreController* scoreController;
 
     private:
     void HandleSwingFinish(GlobalNamespace::CutScoreBuffer* buffer);
+    DelegateUtils::DelegateW<System::Action_1<GlobalNamespace::ScoringElement*>> onFinishDelegate;
 )
 
 #undef INTERFACES

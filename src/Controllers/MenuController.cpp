@@ -1,36 +1,35 @@
 #include "Controllers/MenuController.hpp"
-#include "EasyDelegate.hpp"
 #include "System/Action.hpp"
 #include "SliceDetailsConfig.hpp"
-#include "HMUI/ViewController_DidActivateDelegate.hpp"
-#include "HMUI/ViewController_DidDeactivateDelegate.hpp"
 #include "main.hpp"
 
 DEFINE_TYPE(SliceDetails, MenuController);
 
 using namespace GlobalNamespace;
-using namespace EasyDelegate;
+using namespace DelegateUtils;
 using namespace System;
+using DidActivate = HMUI::ViewController::DidActivateDelegate;
+using DidDeactivate = HMUI::ViewController::DidDeactivateDelegate;
 
 namespace SliceDetails
 {
-    void MenuController::ctor(SliceDetailsFloatingScreen* sliceDetails, ResultsViewController* results, MultiplayerResultsViewController* multiResults, GameServerLobbyFlowCoordinator* multiLobby)
+    void MenuController::ctor(SliceDetailsFloatingScreen* sliceDetails, ResultsViewController* results, MultiplayerResultsViewController* multiResults)
     {
         this->sliceDetails = sliceDetails;
         this->results = results;
         this->multiResults = multiResults;
-        this->multiLobby = multiLobby;
+
+        this->onResultsActivate = {&MenuController::OnResultsActivate, this};
+        this->onResultsDeactivate = {&MenuController::OnResultsDeactivate, this};
     }
 
     void MenuController::Initialize()
     {
         getLogger().debug("Initialising Menu Controller");
-        using OnActivate = HMUI::ViewController::DidActivateDelegate;
-        using OnDeActivate = HMUI::ViewController::DidDeactivateDelegate;
-        results->add_didActivateEvent(MakeDelegate<OnActivate*>(&MenuController::OnResultsActivate, this));
-        results->add_didDeactivateEvent(MakeDelegate<OnDeActivate*>(&MenuController::OnResultsDeActivate, this));
-        multiResults->add_didActivateEvent(MakeDelegate<OnActivate*>(&MenuController::OnResultsActivate, this));
-        multiResults->add_didDeactivateEvent(MakeDelegate<OnDeActivate*>(&MenuController::OnResultsDeActivate, this));
+        results->didActivateEvent += onResultsActivate;
+        results->didDeactivateEvent += onResultsDeactivate;
+        multiResults->didActivateEvent += onResultsActivate;
+        multiResults->didDeactivateEvent += onResultsDeactivate;
     }
 
     void MenuController::OnResultsActivate(bool one, bool two, bool three)
@@ -38,7 +37,7 @@ namespace SliceDetails
         sliceDetails->OnResultsScreenActivate();
     }
 
-    void MenuController::OnResultsDeActivate(bool one, bool two)
+    void MenuController::OnResultsDeactivate(bool one, bool two)
     {
         sliceDetails->OnResultsScreenDeactivate();
     }
@@ -46,5 +45,9 @@ namespace SliceDetails
     void MenuController::Dispose()
     {
         getLogger().debug("Disposing Menu Controller");
+        results->didActivateEvent -= onResultsActivate;
+        results->didDeactivateEvent -= onResultsDeactivate;
+        multiResults->didActivateEvent -= onResultsActivate;
+        multiResults->didDeactivateEvent -= onResultsDeactivate;
     }
 }

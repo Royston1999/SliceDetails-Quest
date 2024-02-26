@@ -1,13 +1,11 @@
 #include "Controllers/PauseController.hpp"
-#include "EasyDelegate.hpp"
-#include "System/Action.hpp"
 #include "SliceDetailsConfig.hpp"
 #include "main.hpp"
 
 DEFINE_TYPE(SliceDetails, PauseController);
 
 using namespace GlobalNamespace;
-using namespace EasyDelegate;
+using namespace DelegateUtils;
 using namespace System;
 
 namespace SliceDetails
@@ -15,14 +13,16 @@ namespace SliceDetails
     void PauseController::ctor(SliceDetailsFloatingScreen* sliceDetails, IGamePause* gamePause)
     {
         this->sliceDetails = sliceDetails;
-        this->gamePause = gamePause;
+        this->gamePause = reinterpret_cast<GamePause*>(gamePause);
+        this->onPause = {&PauseController::OnPause, this};
+        this->onUnPause = {&PauseController::OnUnPause, this};
     }
 
     void PauseController::Initialize()
     {
         getLogger().debug("Initialising Pause Controller");
-        gamePause->add_didPauseEvent(MakeDelegate<Action*>(&PauseController::OnPause, this));
-        gamePause->add_willResumeEvent(MakeDelegate<Action*>(&PauseController::OnUnPause, this));
+        gamePause->didPauseEvent += onPause;
+        gamePause->willResumeEvent += onUnPause;
     }
 
     void PauseController::OnPause()
@@ -39,5 +39,7 @@ namespace SliceDetails
     {
         getLogger().debug("Disposing Pause Controller");
         sliceDetails->OnUnPause();
+        gamePause->didPauseEvent -= onPause;
+        gamePause->willResumeEvent -= onUnPause;
     }
 }

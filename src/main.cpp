@@ -19,7 +19,6 @@
 #include "bsml/shared/BSML/Components/Settings/ToggleSetting.hpp"
 #include "UnityEngine/UI/Toggle.hpp"
 #include "UnityEngine/UI/Toggle_ToggleEvent.hpp"
-#include "EasyDelegate.hpp"
 #include "UnityEngine/Events/UnityAction_1.hpp"
 #include "lapiz/shared/utilities/ZenjectExtensions.hpp"
 #include "Controllers/GameCoreController.hpp"
@@ -27,13 +26,15 @@
 #include "Controllers/MenuController.hpp"
 #include "UI/StatsPanel.hpp"
 #include "GlobalNamespace/GameplayCoreInstaller.hpp"
+#include "DelegateUtils.hpp"
+#include "lapiz/shared/utilities/MainThreadScheduler.hpp"
 
 using namespace UnityEngine;
 using namespace GlobalNamespace;
 using namespace SliceDetails;
-using namespace UnityEngine::Events;
-using namespace EasyDelegate;
-using ToggleDelegate = UnityAction_1<bool>;
+using namespace UnityEngine::UI;
+using namespace DelegateUtils;
+using ToggleDelegate = UnityEngine::Events::UnityAction_1<bool>;
 
 static ModInfo modInfo;
 
@@ -58,30 +59,30 @@ extern "C" void setup(ModInfo& info) {
 }
 
 //ha ha funny skilly issue
-MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self){
-    levelview(self);
-    auto* text = self->get_practiceButton()->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
-    std::thread([text](){ 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        text->SetText("Skill Issue");
-    }).detach();
-}
+// MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self) {
+//     levelview(self);
+//     auto* text = self->get_practiceButton()->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
+//     std::thread([text](){ 
+//         std::this_thread::sleep_for(std::chrono::milliseconds(100));
+//         Lapiz::Utilities::MainThreadScheduler::Schedule([text]() {
+//             text->SetText("Skill Issue");
+//         });
+//     }).detach();
+// }
 
 void DidActivate(HMUI::ViewController* self, bool firstActivation, bool two, bool three)
 {
     if (!firstActivation) return;
     BSML::parse_and_construct(IncludedAssets::SettingsUI_bsml, self->get_transform());
     auto toggles = self->get_transform()->GetComponentsInChildren<BSML::ToggleSetting*>();
-    toggles[0]->toggle->onValueChanged->AddListener(MakeDelegate<ToggleDelegate*>([](bool value)
-    {
-        getSliceDetailsConfig().inPause.SetValue(value);
-    }));
-    toggles[1]->toggle->onValueChanged->AddListener(MakeDelegate<ToggleDelegate*>([](bool value)
-    {
-        getSliceDetailsConfig().inResults.SetValue(value);
-    }));
-    toggles[0]->toggle->set_isOn(getSliceDetailsConfig().inPause.GetValue());
-    toggles[1]->toggle->set_isOn(getSliceDetailsConfig().inResults.GetValue());
+    Toggle *pToggle = toggles[0]->toggle, *rToggle = toggles[1]->toggle;
+    ToggleDelegate *pDel = nullptr, *rDel = nullptr;
+    pDel += DelegateW<ToggleDelegate>([](bool value){getSliceDetailsConfig().inPause.SetValue(value);});
+    rDel += DelegateW<ToggleDelegate>([](bool value){getSliceDetailsConfig().inResults.SetValue(value);});
+    pToggle->onValueChanged->AddListener(pDel);
+    rToggle->onValueChanged->AddListener(rDel);
+    pToggle->set_isOn(getSliceDetailsConfig().inPause.GetValue());
+    rToggle->set_isOn(getSliceDetailsConfig().inResults.GetValue());
 }
 
 extern "C" void load() {
@@ -97,7 +98,7 @@ extern "C" void load() {
     using namespace Lapiz::Zenject;
     using namespace Zenject;
 
-    auto zenjector = Lapiz::Zenject::Zenjector::Get();
+    auto zenjector = Zenjector::Get();
 
     zenjector->Install(Location::App, [](DiContainer* container)
     {

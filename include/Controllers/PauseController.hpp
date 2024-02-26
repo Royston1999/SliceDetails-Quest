@@ -11,7 +11,9 @@
 #include "UI/SliceDetailsFloatingScreen.hpp"
 #include "Data/GridInfo.hpp"
 #include "UnityEngine/Color.hpp"
-#include "GlobalNamespace/IGamePause.hpp"
+#include "GlobalNamespace/GamePause.hpp"
+#include "DelegateUtils.hpp"
+#include "System/Action.hpp"
 
 #define INTERFACES {classof(System::IDisposable*), classof(Zenject::IInitializable*)} \
 
@@ -24,11 +26,13 @@ DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, PauseController, Il2CppObject, st
 
     public:
     SliceDetails::SliceDetailsFloatingScreen* sliceDetails;
-    GlobalNamespace::IGamePause* gamePause;
+    GlobalNamespace::GamePause* gamePause;
 
     private:
     void OnPause();
     void OnUnPause();
+    DelegateUtils::DelegateW<System::Action> onPause;
+    DelegateUtils::DelegateW<System::Action> onUnPause;
 )
 
 #undef INTERFACES

@@ -21,6 +21,36 @@ namespace SliceDetails
         this->index = index;
     }
 
+    Sprite* getArrowSprite() {
+        static SafePtrUnity<Sprite> arrowSprite;
+        if (!arrowSprite) {
+            getLogger().debug("Creating Arrow Sprite");
+            arrowSprite = BSML::Utilities::LoadSpriteRaw(IncludedAssets::arrow_png);
+        }
+        return arrowSprite.ptr();
+    }
+
+    Sprite* getDotSprite() {
+        static SafePtrUnity<Sprite> dotSprite;
+        if (!dotSprite) {
+            getLogger().debug("Creating Dot Sprite");
+            dotSprite = BSML::Utilities::LoadSpriteRaw(IncludedAssets::dot_png);
+        }
+        return dotSprite.ptr();
+    }
+
+    Sprite* getCutImageSprite() {
+        static SafePtrUnity<Sprite> cutImageSprite;
+        if (!cutImageSprite) {
+            getLogger().debug("Creating Cut Image Sprite");
+            Texture2D* texture = Texture2D::New_ctor(2, 2);
+            texture->set_filterMode(FilterMode::Point);
+            texture->Apply();
+            cutImageSprite = BSML::Utilities::LoadSpriteFromTexture(texture);
+        }
+        return cutImageSprite.ptr();
+    }
+
     void NoteUI::PostParse()
     {
         bloqLayout->get_transform()->set_rotation(Quaternion::Euler({0, 0, (float)rot}));
@@ -30,7 +60,7 @@ namespace SliceDetails
         cv->set_additionalShaderChannels(AdditionalCanvasShaderChannels::TexCoord1 | AdditionalCanvasShaderChannels::TexCoord2);
         cv->set_sortingOrder(4);
 
-        noteArrow->set_sprite(BSML::Utilities::LoadSpriteRaw(index%9 == 4 ? IncludedAssets::dot_png : IncludedAssets::arrow_png));
+        noteArrow->set_sprite(index % 9 == 4 ? getDotSprite() : getArrowSprite());
 
         noteBackground->set_material(BSML::Helpers::GetUINoGlowMat());
         noteArrow->set_material(BSML::Helpers::GetUINoGlowMat());
@@ -42,10 +72,7 @@ namespace SliceDetails
         cutDistanceImage->get_transform()->set_localScale({4.0f, 4.0f, 0.0f});
         noteCutArrow->get_transform()->set_localScale({4.0f, 4.0f, 0.0f});
 
-        Texture2D* texture = Texture2D::New_ctor(2, 2);
-        texture->set_filterMode(FilterMode::Point); 
-        texture->Apply();
-        cutDistanceImage->set_sprite(BSML::Utilities::LoadSpriteFromTexture(texture));
+        cutDistanceImage->set_sprite(getCutImageSprite());
         cutDistanceImage->set_color(Color(0.0f, 1.0f, 0.0f, 0.94f));
 
         if (!collider) collider = bloqLayout->get_gameObject()->AddComponent<BoxCollider*>();

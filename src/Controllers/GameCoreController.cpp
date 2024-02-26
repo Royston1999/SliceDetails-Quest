@@ -1,5 +1,4 @@
 #include "Controllers/GameCoreController.hpp"
-#include "EasyDelegate.hpp"
 #include "GlobalNamespace/ScoringElement.hpp"
 #include "System/Action_1.hpp"
 #include "GlobalNamespace/GoodCutScoringElement.hpp"
@@ -11,19 +10,24 @@
 DEFINE_TYPE(SliceDetails, GameCoreController);
 
 using namespace GlobalNamespace;
-using namespace EasyDelegate;
+using namespace DelegateUtils;
 using namespace System;
 using namespace UnityEngine;
-using ScoringDelegate = Action_1<ScoringElement*>;
 
 namespace SliceDetails
 {
     void GameCoreController::ctor(SliceDetailsFloatingScreen* sliceDetails, IScoreController* controller, ColorScheme* colorScheme)
     {
         this->sliceDetails = sliceDetails;
-        this->scoreController = controller;
+        this->scoreController = reinterpret_cast<ScoreController*>(controller);
         this->sliceDetails->leftHand = colorScheme->get_saberAColor();
         this->sliceDetails->rightHand = colorScheme->get_saberBColor();
+        this->onFinishDelegate = [this](ScoringElement* element)
+        {
+            std::optional<GoodCutScoringElement*> goodCut = il2cpp_utils::try_cast<GoodCutScoringElement>(element);
+            if (!goodCut.has_value()) return;
+            HandleSwingFinish((*goodCut)->cutScoreBuffer);
+        };
     }
 
     void GameCoreController::Initialize()
@@ -32,12 +36,7 @@ namespace SliceDetails
         sliceDetails->InitialiseUI();
         sliceDetails->ClearNoteData();
 
-        scoreController->add_scoringForNoteFinishedEvent(MakeDelegate<ScoringDelegate*>([this](ScoringElement* element)
-        {
-            std::optional<GoodCutScoringElement*> goodCut = il2cpp_utils::try_cast<GoodCutScoringElement>(element);
-            if (!goodCut.has_value()) return;
-            HandleSwingFinish((*goodCut)->cutScoreBuffer);
-        }));
+        scoreController->scoringForNoteFinishedEvent += onFinishDelegate;
     }
 
     int GetNotePosIndex(NoteData* noteData)
@@ -105,5 +104,6 @@ namespace SliceDetails
     void GameCoreController::Dispose()
     {
         getLogger().debug("Disposing GameCore Controller");
+        scoreController->scoringForNoteFinishedEvent -= onFinishDelegate;
     }
 }

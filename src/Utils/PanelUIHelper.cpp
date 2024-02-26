@@ -47,6 +47,14 @@ namespace SliceDetails
         GetHapticController()->PlayHapticFeedback(node, GetHapticPreset());
     }
 
+    void PanelUIHelper::UnFuckModal()
+    {
+        auto* self = sliceDetails->panelScreen->noteUIModal->modal;
+        auto cm = self->get_gameObject()->GetComponent<Canvas*>();
+        cm->set_overrideSorting(false); 
+        cm->set_sortingOrder(31);
+    }
+
     PanelUIHelper* PanelUIHelper::AddPanelHelper(SliceDetailsFloatingScreen* screen, PanelUI* panelUI)
     {
         auto helper = panelUI->collider->get_gameObject()->AddComponent<PanelUIHelper*>();
@@ -71,10 +79,7 @@ namespace SliceDetails
         if (buttonClickedSignal) buttonClickedSignal->Raise();
         sliceDetails->UpdateNoteInfoUI(panel->index);
         sliceDetails->panelScreen->noteUIModal->modal->Show(true, true, nullptr);
-        auto* self = sliceDetails->panelScreen->noteUIModal->modal;
-        auto cm = self->get_gameObject()->GetComponent<Canvas*>();
-        cm->set_overrideSorting(false); 
-        cm->set_sortingOrder(31);
+        UnFuckModal();
         sliceDetails->statsPanel->DeactivatePanel();
     }
 

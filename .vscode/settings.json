@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.bsml": "xml",
         "iosfwd": "cpp",
         "__config": "cpp",
         "__nullptr": "cpp",
@@ -114,7 +115,12 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "stop_token": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "ranges": "cpp",
+        "source_location": "cpp",
+        "__std_stream": "cpp",
+        "memory_resource": "cpp",
+        "__functional_03": "cpp"
     },
     "cmake.configureOnOpen": false
 }
