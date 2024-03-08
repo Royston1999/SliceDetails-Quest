@@ -15,7 +15,10 @@ namespace SliceDetails
     {
         auto modal = sliceDetails->panelScreen->noteUIModal->modal;
         if (!modal->isShown) return;
-        auto controller = sliceDetails->floatingScreen->screenMover->_vrPointer->vrController;
+        auto pointer = sliceDetails->floatingScreen->screenMover->_vrPointer;
+        if (!pointer || !pointer->m_CachedPtr.m_value) return;
+        auto controller = pointer->vrController;
+        if (!controller || !controller->m_CachedPtr.m_value) return;
         if (controller->get_triggerValue() > 0.9f && !justEnabled && !sliceDetails->grabbingHandle && !high->hoveringHandle) modal->Hide(true, nullptr);
         else if (controller->get_triggerValue() < 0.35f) justEnabled = false;
     }
