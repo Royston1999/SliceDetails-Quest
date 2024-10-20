@@ -1,0 +1,21 @@
+<vertical xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd' 
+    spacing="-1.5">
+    <horizontal spacing="-2.5">
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+    </horizontal>
+    <horizontal spacing="-2.5">
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+    </horizontal>
+    <horizontal spacing="-2.5">
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+        <image src="slicedetails_dot_png" pref-height="5" pref-width="5" img-color="grey"></image>
+    </horizontal>
+</vertical>

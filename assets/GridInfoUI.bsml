@@ -1,0 +1,5 @@
+<stack xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'
+    id="panelLayout">
+    <image id="background" src="slicedetails_bloq_grad_png" pref-height="9" pref-width="9" img-color="grey"></image>
+    <text id="noteCutText" font-size="3" align="Center"/>
+</stack>

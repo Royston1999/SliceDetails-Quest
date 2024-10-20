@@ -1,0 +1,6 @@
+<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+    <image id="noteBackground" src="slicedetails_bloq_png" size-delta-x="4" size-delta-y="4" preserve-aspect="true"></image>
+    <image id="noteArrow" size-delta-x="4" size-delta-y="4" preserve-aspect="true"></image>
+    <image id="cutDistanceImage" size-delta-x="4" size-delta-y="4" preserve-aspect="true"></image>
+    <image id="noteCutArrow" src="slicedetails_cut_arrow_png" size-delta-x="4" size-delta-y="4" preserve-aspect="true"></image>
+</bg>

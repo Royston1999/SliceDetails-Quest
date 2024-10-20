@@ -12,23 +12,22 @@
 #include "UI/GridDotsViewController.hpp"
 #include "UI/NoteUI.hpp"
 #include "UnityEngine/Transform.hpp"
-#include "UnityEngine/UI/Image.hpp"
-#include "UnityEngine/BoxCollider.hpp"
-#include "HMUI/ImageView.hpp"
-#include "HMUI/StackLayoutGroup.hpp"
+#include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
 #include "System/Object.hpp"
 
-DECLARE_CLASS_CODEGEN(SliceDetails, PanelUI, System::Object,
+DECLARE_CLASS_CODEGEN(SliceDetails, NoteUIModal, System::Object,
 
-    DECLARE_CTOR(ctor, int index);
+    DECLARE_INSTANCE_FIELD(HMUI::ModalView*, modal);
+
+    DECLARE_INSTANCE_METHOD(void, InitialiseUI, UnityEngine::Transform* parent);
     DECLARE_INSTANCE_METHOD(void, PostParse);
 
-    DECLARE_INSTANCE_FIELD(HMUI::StackLayoutGroup*, panelLayout);
-    DECLARE_INSTANCE_FIELD(HMUI::ImageView*, background);
-    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, noteCutText);
+    DECLARE_CTOR(ctor, SliceDetails::GridDotsViewController* dots);
 
     public:
-    UnityEngine::BoxCollider* collider; // might not be needed
-    std::string hoverText;
-    int index;
+    SliceDetails::NoteUI* modalNotes[18];
+    UnityEngine::Color leftHand;
+    UnityEngine::Color rightHand;
+    SliceDetails::GridDotsViewController* gridDots;
 )
+

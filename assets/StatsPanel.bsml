@@ -1,0 +1,4 @@
+<image xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'
+    id="border" src="slicedetails_border_png" size-delta-x="100" size-delta-y="100" anchor-min-x="0.5" anchor-min-y="0.5" anchor-max-x="0.5" anchor-max-y="0.5">
+    <text id="text" italics="false" align="Center" font-size="10" color="black"></text>
+</image>

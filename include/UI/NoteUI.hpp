@@ -1,37 +1,37 @@
 #pragma once
-#include "UnityEngine/GameObject.hpp"
-#include "UnityEngine/UI/Image.hpp"
-#include "UnityEngine/Space.hpp"
-#include "HMUI/HoverHint.hpp"
-#include "UnityEngine/Sprite.hpp"
+
+#include "System/IDisposable.hpp"
+#include "Zenject/IInitializable.hpp"
+#include "custom-types/shared/macros.hpp"
+#include "lapiz/shared/macros.hpp"
+#include "TMPro/TextMeshProUGUI.hpp"
+#include "bsml/shared/macros.hpp"
+#include "bsml/shared/BSML/FloatingScreen/FloatingScreen.hpp"
+#include "UnityEngine/Quaternion.hpp"
+#include "HMUI/ModalView.hpp"
+#include "UI/GridDotsViewController.hpp"
+#include "UI/NoteUI.hpp"
 #include "UnityEngine/Transform.hpp"
-#include "UnityEngine/Vector3.hpp"
-#include "UnityEngine/Canvas.hpp"
-#include "questui/shared/BeatSaberUI.hpp"
-#include "Resources/Sprites.hpp"
-#include "UnityEngine/UI/ContentSizeFitter.hpp"
-#include "UnityEngine/Material.hpp"
-#include "UnityEngine/Resources.hpp"
+#include "UnityEngine/UI/Image.hpp"
 #include "UnityEngine/BoxCollider.hpp"
-#include "HMUI/HoverHintController.hpp"
-#include "HMUI/HoverHintPanel.hpp"
-#include "UnityEngine/Texture2D.hpp"
-#include "UnityEngine/FilterMode.hpp"
-#include "UnityEngine/Rect.hpp"
-#include "UnityEngine/SpriteMeshType.hpp"
-#include <iomanip>
+#include "HMUI/ImageView.hpp"
+#include "HMUI/StackLayoutGroup.hpp"
+#include "System/Object.hpp"
 
+DECLARE_CLASS_CODEGEN(SliceDetails, NoteUI, System::Object,
 
-namespace SliceDetails{
-    class NoteUI{
-        public:
-            UnityEngine::UI::Image* noteBackground;
-            UnityEngine::UI::Image* noteArrow;
-            UnityEngine::UI::Image* noteCutArrow;
-            UnityEngine::BoxCollider* collider; // might not be needed
-            UnityEngine::UI::Image* cutDistanceImage;
-            std::string hoverText;
-            int rot;
-            NoteUI(UnityEngine::Transform* parent, UnityEngine::Sprite* noteArrowSprite, int rotation, int index);
-    };
-}
+    DECLARE_CTOR(ctor, int rotation, int index);
+    DECLARE_INSTANCE_METHOD(void, PostParse);
+
+    DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, bloqLayout);
+    DECLARE_INSTANCE_FIELD(HMUI::ImageView*, noteBackground);
+    DECLARE_INSTANCE_FIELD(HMUI::ImageView*, noteArrow);
+    DECLARE_INSTANCE_FIELD(HMUI::ImageView*, noteCutArrow);
+    DECLARE_INSTANCE_FIELD(HMUI::ImageView*, cutDistanceImage);
+
+    public:
+    UnityEngine::BoxCollider* collider; // might not be needed
+    std::string hoverText;
+    int rot;
+    int index;
+)

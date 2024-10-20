@@ -2,7 +2,7 @@
     "configurations": [
         {
             "defines": [
-                "ID=\"slicedetails\"",
+                "MOD_ID=\"slicedetails\"",
                 "VERSION=\"1.2.0\"",
                 "__GNUC__",
                 "__aarch64__"

@@ -1,0 +1,6 @@
+<vertical xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'
+    id="gridInfoLayout" spacing="-5">
+    <horizontal spacing="0"/>
+    <horizontal spacing="0"/>
+    <horizontal spacing="0"/>
+</vertical>
