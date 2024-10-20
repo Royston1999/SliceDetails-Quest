@@ -76,10 +76,14 @@ jobs:
         cache: true
         publish: false
 
-    - name: Build & Create Qmod
+    - name: Build
       run: |
         cd ${GITHUB_WORKSPACE}
-        qpm s qmod
+        ./QPM/qpm qmod build
+        pwsh -Command ./build.ps1
+    - name: Create Qmod
+      run: |
+        pwsh -Command ./buildQMOD.ps1 ${{ env.qmodName }}_${{ github.event.inputs.version }}
 
     - name: Get Library Name
       id: libname
