@@ -11,7 +11,7 @@
 #include "UnityEngine/Vector3.hpp"
 #include "UI/PanelUI.hpp"
 #include "UI/SliceDetailsFloatingScreen.hpp"
-#include "GlobalNamespace/HapticFeedbackController.hpp"
+#include "GlobalNamespace/HapticFeedbackManager.hpp"
 #include "Libraries/HM/HMLib/VR/HapticPresetSO.hpp"
 #include "GlobalNamespace/Signal.hpp"
 
@@ -23,9 +23,9 @@
 
 DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, PanelUIHelper, UnityEngine::MonoBehaviour, std::vector<Il2CppClass*>(INTERFACES),
 
-    DECLARE_OVERRIDE_METHOD(void, OnPointerEnter, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter>::get());
-    DECLARE_OVERRIDE_METHOD(void, OnPointerClick, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerClickHandler::OnPointerClick>::get());
-    DECLARE_OVERRIDE_METHOD(void, OnPointerExit, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit>::get());
+    DECLARE_OVERRIDE_METHOD(void, OnPointerEnter, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter>::methodInfo());
+    DECLARE_OVERRIDE_METHOD(void, OnPointerClick, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerClickHandler::OnPointerClick>::methodInfo());
+    DECLARE_OVERRIDE_METHOD(void, OnPointerExit, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit>::methodInfo());
 
     public:
     static PanelUIHelper* AddPanelHelper(SliceDetailsFloatingScreen* screen, PanelUI* panelUI);

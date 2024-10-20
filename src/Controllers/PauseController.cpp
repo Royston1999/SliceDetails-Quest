@@ -21,8 +21,8 @@ namespace SliceDetails
     void PauseController::Initialize()
     {
         getLogger().debug("Initialising Pause Controller");
-        gamePause->didPauseEvent += onPause;
-        gamePause->willResumeEvent += onUnPause;
+        gamePause->___didPauseEvent += onPause;
+        gamePause->___willResumeEvent += onUnPause;
     }
 
     void PauseController::OnPause()
@@ -39,7 +39,7 @@ namespace SliceDetails
     {
         getLogger().debug("Disposing Pause Controller");
         sliceDetails->OnUnPause();
-        gamePause->didPauseEvent -= onPause;
-        gamePause->willResumeEvent -= onUnPause;
+        gamePause->___didPauseEvent -= onPause;
+        gamePause->___willResumeEvent -= onUnPause;
     }
 }

@@ -15,7 +15,7 @@
 
 DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, GridDotsViewController, HMUI::ViewController, std::vector<Il2CppClass*>(INTERFACES),
     
-    DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::HMUI::ViewController::DidActivate>::get(), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
+    DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::HMUI::ViewController::DidActivate>::methodInfo(), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
 
 
     public:

@@ -13,8 +13,9 @@
 #include "UI/NoteUI.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
+#include "System/Object.hpp"
 
-DECLARE_CLASS_CODEGEN(SliceDetails, NoteUIModal, Il2CppObject,
+DECLARE_CLASS_CODEGEN(SliceDetails, NoteUIModal, System::Object,
 
     DECLARE_INSTANCE_FIELD(HMUI::ModalView*, modal);
 

@@ -1,4 +1,5 @@
 #include "Data/GridInfo.hpp"
+#include <span>
 
 std::string SliceDetails::GridInfo::Round(float val, int precision)
 {
@@ -31,7 +32,14 @@ void SliceDetails::GridInfo::addNewGridPosData(float pre, float post, float acc)
     cutCount += 1;
 }
 
+SliceDetails::NoteInfo getCombinedNoteInfo(const std::span<SliceDetails::NoteInfo*>& noteInfos){
+    SliceDetails::NoteInfo holyNote;
+    for (auto& note : noteInfos) holyNote.addNewNoteData(note->preswing, note->postswing, note->offset, note->cutAngle, note->cutOffset);
+    return holyNote;
+}
+
 std::string SliceDetails::GridInfo::getAverageValueStringData(){
+    return getCombinedNoteInfo(std::span<NoteInfo*>(notes)).getAverageValueStringData();
     std::string averagePre = Round(preswing/cutCount, 2);
     std::string averagePost = Round(postswing/cutCount, 2);
     std::string averageAcc = Round(offset/cutCount, 2);

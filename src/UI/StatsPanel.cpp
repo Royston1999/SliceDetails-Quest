@@ -17,8 +17,8 @@ namespace SliceDetails
     void StatsPanel::ActivatePanel(UnityEngine::Transform* transform, UnityEngine::Vector3 position, std::string text)
     {
         border->get_transform()->SetParent(transform, false);
-        border->get_transform()->set_localPosition(transform->InverseTransformPoint(position) + Vector3(0.0f, 15.5f, 0.0f));
-        this->text->SetText(text);
+        border->get_transform()->set_localPosition(Vector3::op_Addition(transform->InverseTransformPoint(position), Vector3(0.0f, 15.5f, 0.0f)));
+        this->text->set_text(text);
         border->get_gameObject()->set_active(true);
     }
 

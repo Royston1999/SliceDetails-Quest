@@ -1,15 +1,10 @@
 #include "Controllers/MenuController.hpp"
-#include "System/Action.hpp"
-#include "SliceDetailsConfig.hpp"
 #include "main.hpp"
 
 DEFINE_TYPE(SliceDetails, MenuController);
 
 using namespace GlobalNamespace;
 using namespace DelegateUtils;
-using namespace System;
-using DidActivate = HMUI::ViewController::DidActivateDelegate;
-using DidDeactivate = HMUI::ViewController::DidDeactivateDelegate;
 
 namespace SliceDetails
 {
@@ -26,10 +21,10 @@ namespace SliceDetails
     void MenuController::Initialize()
     {
         getLogger().debug("Initialising Menu Controller");
-        results->didActivateEvent += onResultsActivate;
-        results->didDeactivateEvent += onResultsDeactivate;
-        multiResults->didActivateEvent += onResultsActivate;
-        multiResults->didDeactivateEvent += onResultsDeactivate;
+        results->___didActivateEvent += onResultsActivate;
+        results->___didDeactivateEvent += onResultsDeactivate;
+        multiResults->___didActivateEvent += onResultsActivate;
+        multiResults->___didDeactivateEvent += onResultsDeactivate;
     }
 
     void MenuController::OnResultsActivate(bool one, bool two, bool three)
@@ -45,9 +40,9 @@ namespace SliceDetails
     void MenuController::Dispose()
     {
         getLogger().debug("Disposing Menu Controller");
-        results->didActivateEvent -= onResultsActivate;
-        results->didDeactivateEvent -= onResultsDeactivate;
-        multiResults->didActivateEvent -= onResultsActivate;
-        multiResults->didDeactivateEvent -= onResultsDeactivate;
+        results->___didActivateEvent -= onResultsActivate;
+        results->___didDeactivateEvent -= onResultsDeactivate;
+        multiResults->___didActivateEvent -= onResultsActivate;
+        multiResults->___didDeactivateEvent -= onResultsDeactivate;
     }
 }

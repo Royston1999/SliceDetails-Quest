@@ -14,7 +14,7 @@
 
 DECLARE_CLASS_CODEGEN(SliceDetails, PanelScreenViewController, HMUI::ViewController,
 
-    DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::HMUI::ViewController::DidActivate>::get(), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
+    DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::HMUI::ViewController::DidActivate>::methodInfo(), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
 
     DECLARE_INSTANCE_FIELD(NoteUIModal*, noteUIModal);
     DECLARE_INSTANCE_FIELD(BSML::FloatingScreen*, floatingScreen);

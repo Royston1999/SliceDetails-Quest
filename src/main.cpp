@@ -1,8 +1,5 @@
 #include "main.hpp"
-#include <iomanip>
-#include <sstream>
 #include "SliceDetailsConfig.hpp"
-#include <map>
 #include "beatsaber-hook/shared/utils/hooking.hpp"
 #include "GlobalNamespace/StandardLevelDetailView.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
@@ -12,13 +9,11 @@
 #include "lapiz/shared/zenject/Zenjector.hpp"
 #include "Zenject/DiContainer.hpp"
 #include "Zenject/FromBinderNonGeneric.hpp"
-#include "Zenject/IfNotBoundBinder.hpp"
 #include "Zenject/ConcreteIdBinderGeneric_1.hpp"
 #include "UI/SliceDetailsFloatingScreen.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "bsml/shared/BSML/Components/Settings/ToggleSetting.hpp"
 #include "UnityEngine/UI/Toggle.hpp"
-#include "UnityEngine/UI/Toggle_ToggleEvent.hpp"
 #include "UnityEngine/Events/UnityAction_1.hpp"
 #include "lapiz/shared/utilities/ZenjectExtensions.hpp"
 #include "Controllers/GameCoreController.hpp"
@@ -36,7 +31,7 @@ using namespace UnityEngine::UI;
 using namespace DelegateUtils;
 using ToggleDelegate = UnityEngine::Events::UnityAction_1<bool>;
 
-static ModInfo modInfo;
+static modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
 
 Configuration& getConfig() {
     static Configuration config(modInfo);
@@ -44,17 +39,14 @@ Configuration& getConfig() {
     return config;
 }
 
-Logger& getLogger() {
-    static Logger* logger = new Logger(modInfo);
-    return *logger;
+const Paper::ConstLoggerContext<13UL>& getLogger() {
+    static constexpr auto Logger = Paper::ConstLoggerContext("slicedetails");
+    return Logger;
 }
 
-extern "C" void setup(ModInfo& info) {
-    info.id = ID;
-    info.version = VERSION;
-    modInfo = info;
+SLICE_DETAILS_EXPORT_FUNC void setup(CModInfo& info) {
+    info = modInfo.to_c();
 
-    getConfig().Load();
     getLogger().info("Completed setup!");
 }
 
@@ -65,7 +57,7 @@ MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, Stand
     std::thread([text](){ 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         Lapiz::Utilities::MainThreadScheduler::Schedule([text]() {
-            text->SetText("Skill Issue");
+            text->set_text("Skill Issue");
         });
     }).detach();
 }
@@ -79,20 +71,20 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool two, boo
     ToggleDelegate *pDel = nullptr, *rDel = nullptr;
     pDel += DelegateW<ToggleDelegate>([](bool value){getSliceDetailsConfig().inPause.SetValue(value);});
     rDel += DelegateW<ToggleDelegate>([](bool value){getSliceDetailsConfig().inResults.SetValue(value);});
-    pToggle->onValueChanged->AddListener(pDel);
-    rToggle->onValueChanged->AddListener(rDel);
+    pToggle->___onValueChanged->AddListener(pDel);
+    rToggle->___onValueChanged->AddListener(rDel);
     pToggle->set_isOn(getSliceDetailsConfig().inPause.GetValue());
     rToggle->set_isOn(getSliceDetailsConfig().inResults.GetValue());
 }
 
-extern "C" void load() {
+SLICE_DETAILS_EXPORT_FUNC void late_load() {
     il2cpp_functions::Init();
     getSliceDetailsConfig().Init(modInfo);
     BSML::Init();
     custom_types::Register::AutoRegister();
     BSML::Register::RegisterSettingsMenu("Slice Details", &DidActivate, false);
 
-    // INSTALL_HOOK(getLogger(), levelview);
+    INSTALL_HOOK(getLogger(), levelview);
 
     using namespace Lapiz::Zenject::ZenjectExtensions;
     using namespace Lapiz::Zenject;

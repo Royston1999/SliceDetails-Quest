@@ -3,6 +3,8 @@
 #include "UnityEngine/Canvas.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "GlobalNamespace/MenuShockwave.hpp"
+#include "UnityEngine/EventSystems/EventSystem.hpp"
+#include "VRUIControls/VRInputModule.hpp"
 
 DEFINE_TYPE(SliceDetails, PanelUIHelper);
 
@@ -15,8 +17,8 @@ namespace SliceDetails
     GlobalNamespace::Signal* GetImageClickedSignal() {
         static SafePtrUnity<GlobalNamespace::Signal> imageClickedSignal;
         if (!imageClickedSignal) {
-            auto menuShockWave = Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuShockwave*>().FirstOrDefault();
-            imageClickedSignal = menuShockWave ? menuShockWave->buttonClickEvents.LastOrDefault() : nullptr;
+            auto menuShockWave = Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuShockwave*>().front_or_default();
+            imageClickedSignal = menuShockWave ? menuShockWave->____buttonClickEvents.back_or_default() : nullptr;
         }
         return imageClickedSignal.ptr();
     }
@@ -25,20 +27,32 @@ namespace SliceDetails
         static SafePtrUnity<HapticPresetSO> imageHapticPreset;
         if (!imageHapticPreset) {
             imageHapticPreset = ScriptableObject::CreateInstance<HapticPresetSO*>();
-            imageHapticPreset->duration = 0.02f;
-            imageHapticPreset->strength = 1.0f;
-            imageHapticPreset->frequency = 0.2f;
+            imageHapticPreset->____duration = 0.02f;
+            imageHapticPreset->____strength = 1.0f;
+            imageHapticPreset->____frequency = 0.2f;
             Object::DontDestroyOnLoad(imageHapticPreset.ptr());
         }
         return imageHapticPreset.ptr();
     }
 
-    GlobalNamespace::HapticFeedbackController* GetHapticController() {
-        static SafePtrUnity<GlobalNamespace::HapticFeedbackController> imageHapticFeedbackController;
+    GlobalNamespace::HapticFeedbackManager* GetHapticController() {
+        static SafePtrUnity<GlobalNamespace::HapticFeedbackManager> imageHapticFeedbackController;
         if (!imageHapticFeedbackController) {
-            imageHapticFeedbackController = UnityEngine::Object::FindObjectOfType<GlobalNamespace::HapticFeedbackController*>();
+            imageHapticFeedbackController = UnityEngine::Object::FindObjectOfType<GlobalNamespace::HapticFeedbackManager*>();
         }
         return imageHapticFeedbackController.ptr();
+    }
+
+    VRUIControls::VRPointer* GetVRPointer() {
+        static SafePtrUnity<VRUIControls::VRPointer> pointer;
+        if (pointer && pointer->get_enabled()) return pointer.ptr();
+        auto currentEventSystem = UnityEngine::EventSystems::EventSystem::get_current();
+        if (!currentEventSystem) return nullptr;
+        auto vrInputModule = currentEventSystem->get_currentInputModule().try_cast<VRUIControls::VRInputModule>().value_or(nullptr);
+        if (!vrInputModule) return nullptr;
+
+        pointer = vrInputModule->____vrPointer;
+        return pointer.ptr();
     }
 
     void PanelUIHelper::Vibrate(bool left)
@@ -68,7 +82,7 @@ namespace SliceDetails
     {
         if (sliceDetails->gridNotes[panel->index]->cutCount == 0) return;
         if (sliceDetails->grabbingHandle) return;
-        Vibrate(!VRUIControls::VRPointer::_get__lastControllerUsedWasRight());
+        Vibrate(!GetVRPointer()->____lastSelectedControllerWasRight);
         panel->background->set_color(Color(0.70f, 0.70f, 0.70f, 1.0f));
         sliceDetails->statsPanel->ActivatePanel(sliceDetails->panelScreen->get_transform(), panel->collider->get_transform()->get_position(), panel->hoverText);
     }

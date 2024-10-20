@@ -24,10 +24,10 @@
 
 DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, HandleHighlighter, UnityEngine::MonoBehaviour, std::vector<Il2CppClass*>(INTERFACES),
 
-    DECLARE_OVERRIDE_METHOD(void, OnPointerEnter, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter>::get());
-    DECLARE_OVERRIDE_METHOD(void, OnPointerDown, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerDownHandler::OnPointerDown>::get());
-    DECLARE_OVERRIDE_METHOD(void, OnPointerUp, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerUpHandler::OnPointerUp>::get());
-    DECLARE_OVERRIDE_METHOD(void, OnPointerExit, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit>::get());
+    DECLARE_OVERRIDE_METHOD(void, OnPointerEnter, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter>::methodInfo());
+    DECLARE_OVERRIDE_METHOD(void, OnPointerDown, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerDownHandler::OnPointerDown>::methodInfo());
+    DECLARE_OVERRIDE_METHOD(void, OnPointerUp, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerUpHandler::OnPointerUp>::methodInfo());
+    DECLARE_OVERRIDE_METHOD(void, OnPointerExit, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit>::methodInfo());
     DECLARE_INSTANCE_METHOD(void, Start);
 
     public:
@@ -35,10 +35,6 @@ DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, HandleHighlighter, UnityEngine::M
     bool hoveringHandle = false;
     private:
     SliceDetailsFloatingScreen* floater;
-    UnityEngine::MeshRenderer* renderer;
-    UnityEngine::Material* origMat;
-    UnityEngine::Material* GetHoverMat();
-    
 )
 
 #undef INTERFACES

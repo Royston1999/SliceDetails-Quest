@@ -1,10 +1,8 @@
 #include "UI/SliceDetailsFloatingScreen.hpp"
 #include "UnityEngine/Quaternion.hpp"
-#include "HMUI/ViewController_AnimationType.hpp"
 #include "SliceDetailsConfig.hpp"
 #include "HMUI/CurvedCanvasSettings.hpp"
 #include "UnityEngine/Material.hpp"
-#include "UnityEngine/MeshRenderer.hpp"
 #include "UnityEngine/Shader.hpp"
 #include "bsml/shared/BSML/FloatingScreen/FloatingScreenHandleEventArgs.hpp"
 #include "bsml/shared/BSML/FloatingScreen/FloatingScreenHandle.hpp"
@@ -52,10 +50,8 @@ namespace SliceDetails
         screenhandle = floatingScreen->handle;
         screenhandle->get_transform()->set_localPosition({0.0f, -15.0f, 0.0f});
         screenhandle->get_transform()->set_localScale({3.3f, 3.3f, 3.3f});
-        auto rend = screenhandle->GetComponent<MeshRenderer*>();
-        auto mat = Material::New_ctor(Shader::Find("Custom/SimpleLit"));
-        mat->set_color(Color::get_white());
-        rend->set_material(mat);
+        floatingScreen->set_HighlightHandle(true);
+
         auto canvas = floatingScreen->get_transform()->GetComponentInChildren<Canvas*>();
         canvas->set_sortingOrder(31);
         auto backgroundGo = GameObject::New_ctor("bg");
@@ -63,14 +59,14 @@ namespace SliceDetails
         auto background = backgroundGo->AddComponent<BSML::Backgroundable*>();
         background->ApplyBackground("round-rect-panel");
         background->ApplyAlpha(0.94f);
-        reinterpret_cast<RectTransform*>(background->get_transform())->set_sizeDelta(floatingScreen->get_ScreenSize());
-        UnityEngine::Object::Destroy(screenhandle->GetComponent<BSML::FloatingScreenHandle*>());
+        reinterpret_cast<RectTransform*>(background->get_transform().ptr())->set_sizeDelta(floatingScreen->get_ScreenSize());
+
         auto highlight = HandleHighlighter::AddHighlight(this, screenhandle);
-        floatingScreen->HandleReleased.addCallback(&SliceDetailsFloatingScreen::UpdateCoordinates, this);
+        floatingScreen->HandleReleased += {&SliceDetailsFloatingScreen::UpdateCoordinates, this};
 
         floatingScreen->SetRootViewController(panelScreen, HMUI::ViewController::AnimationType::None);
         floatingScreen->get_gameObject()->set_active(true);
-        floatingScreen->rootViewController->__Activate(false, false);  
+        floatingScreen->____rootViewController->__Activate(false, false);  
 
         for (auto& panel : panelScreen->panelImages) PanelUIHelper::AddPanelHelper(this, panel);
         for (auto& note : panelScreen->noteUIModal->modalNotes) NoteUIHelper::AddNoteHelper(this, note);
@@ -89,7 +85,7 @@ namespace SliceDetails
             PanelUI* panel = panelScreen->panelImages[i];
             panel->hoverText = hasData ? gridNotes[i]->getAverageValueStringData() : std::string();
             panel->noteCutText->get_gameObject()->set_active(hasData);
-            panel->noteCutText->SetText(hasData ? gridNotes[i]->getAverageScoreString() : std::string());
+            panel->noteCutText->set_text(hasData ? gridNotes[i]->getAverageScoreString() : std::string());
         }
     }
 
@@ -107,7 +103,7 @@ namespace SliceDetails
                 modalNotes[i]->noteCutArrow->get_transform()->set_localRotation(Quaternion::Euler({0.0f, 0.0f, realAngle}));
                 modalNotes[i]->noteCutArrow->get_transform()->set_localPosition({realOffset * (float)std::cos(realAngle * M_PI / 180), realOffset * (float)std::sin(realAngle * M_PI / 180), 0.0f});
                 modalNotes[i]->cutDistanceImage->get_transform()->set_localRotation(Quaternion::Euler({0.0f, 0.0f, realAngle}));
-                modalNotes[i]->cutDistanceImage->get_transform()->set_localPosition(modalNotes[i]->noteCutArrow->get_transform()->get_localPosition() / 2);
+                modalNotes[i]->cutDistanceImage->get_transform()->set_localPosition(Vector3::op_Division(modalNotes[i]->noteCutArrow->get_transform()->get_localPosition(), 2));
                 modalNotes[i]->cutDistanceImage->get_transform()->set_localScale({realOffset / 4.0f, modalNotes[i]->cutDistanceImage->get_transform()->get_localScale().y, 0.0f});
                 // modalNotes[i]->cutDistanceImage->set_color(i > 8 ? Color(1.0f-rightHand.r, 1.0f-rightHand.g, 1.0f-rightHand.b, 0.75f) : Color(1.0f-leftHand.r, 1.0f-leftHand.g, 1.0f-leftHand.b, 0.75f));
                 modalNotes[i]->noteBackground->set_color(i > 8 ? rightHand : leftHand);

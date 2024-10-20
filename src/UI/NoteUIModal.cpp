@@ -3,9 +3,7 @@
 #include "assets.hpp"
 #include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
 #include "UnityEngine/Quaternion.hpp"
-#include "HMUI/ViewController_AnimationType.hpp"
 #include "main.hpp"
-#include "UnityEngine/UI/ContentSizeFitter.hpp"
 #include "UnityEngine/Canvas.hpp"
 #include "bsml/shared/BSML/Components/Backgroundable.hpp"
 
@@ -36,11 +34,11 @@ namespace SliceDetails
         int rots[9] = {225, 180, 135, 270, 0, 90, 315, 0, 45};
         for (int i = 0; i < 18; i++)
         {    
-            auto* layout = layouts[(int)(i/3)+1];
+            auto* layout = layouts[i/3 + 1];
             modalNotes[i] = NoteUI::New_ctor(rots[i%9], i);
-            auto note = modalNotes[i]->bloqLayout = GameObject::New_ctor("SliceDetailsModalNote");
-            note->get_transform()->SetParent(layout->get_transform(), false);
-            BSML::parse_and_construct(IncludedAssets::NoteInfoUI_bsml, note->get_transform(), modalNotes[i]);
+            modalNotes[i]->bloqLayout = GameObject::New_ctor("SliceDetailsModalNote");
+            modalNotes[i]->bloqLayout->get_transform()->SetParent(layout->get_transform(), false);
+            BSML::parse_and_construct(IncludedAssets::NoteInfoUI_bsml, modalNotes[i]->bloqLayout->get_transform(), modalNotes[i]);
         }
 
         // this shouldn't really be a floating screen but nevermind
@@ -55,9 +53,9 @@ namespace SliceDetails
         
         gridDotsScreen->SetRootViewController(gridDots, HMUI::ViewController::AnimationType::None);
         gridDotsScreen->get_gameObject()->set_active(true);
-        gridDotsScreen->rootViewController->__Activate(false, false);
+        gridDotsScreen->____rootViewController->__Activate(false, false);
         gridDotsScreen->get_transform()->SetParent(modal->get_transform(), false);
-        gridDotsScreen->get_transform()->set_localPosition(gridDotsScreen->get_transform()->get_localPosition() + Vector3(0.0f, 15.0f, -1.2f));
+        gridDotsScreen->get_transform()->set_localPosition(Vector3::op_Addition(gridDotsScreen->get_transform()->get_localPosition(), Vector3(0.0f, 15.0f, -1.2f)));
         gridDotsScreen->get_transform()->set_localScale({0.85f, 0.85f, 0.0f});
     }
 }

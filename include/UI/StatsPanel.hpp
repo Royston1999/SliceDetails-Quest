@@ -13,8 +13,9 @@
 #include "UI/NoteUI.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
+#include "System/Object.hpp"
 
-DECLARE_CLASS_CODEGEN(SliceDetails, StatsPanel, Il2CppObject,
+DECLARE_CLASS_CODEGEN(SliceDetails, StatsPanel, System::Object,
 
     DECLARE_INSTANCE_FIELD(HMUI::ImageView*, border);
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, text);

@@ -16,8 +16,9 @@
 #include "UnityEngine/BoxCollider.hpp"
 #include "HMUI/ImageView.hpp"
 #include "HMUI/StackLayoutGroup.hpp"
+#include "System/Object.hpp"
 
-DECLARE_CLASS_CODEGEN(SliceDetails, PanelUI, Il2CppObject,
+DECLARE_CLASS_CODEGEN(SliceDetails, PanelUI, System::Object,
 
     DECLARE_CTOR(ctor, int index);
     DECLARE_INSTANCE_METHOD(void, PostParse);

@@ -57,7 +57,7 @@ namespace SliceDetails
         bloqLayout->get_transform()->set_localScale({0.46f, 0.46f, 0.0f});
         bloqLayout->set_layer(5);
         Canvas* cv = bloqLayout->AddComponent<Canvas*>();
-        cv->set_additionalShaderChannels(AdditionalCanvasShaderChannels::TexCoord1 | AdditionalCanvasShaderChannels::TexCoord2);
+        cv->set_additionalShaderChannels(AdditionalCanvasShaderChannels::TexCoord1.value__ | AdditionalCanvasShaderChannels::TexCoord2.value__);
         cv->set_sortingOrder(4);
 
         noteArrow->set_sprite(index % 9 == 4 ? getDotSprite() : getArrowSprite());
