@@ -29,7 +29,7 @@ jobs:
         cat ${GITHUB_WORKSPACE}/ndkpath.txt
     - name: Get QPM
       if: steps.cache-qpm.outputs.cache-hit != 'true'
-      uses: dawidd6/action-download-artifact@v2
+      uses: dawidd6/action-download-artifact@v4
       with:
         github_token: ${{secrets.GITHUB_TOKEN}}
         workflow: cargo-build.yml
@@ -83,14 +83,14 @@ jobs:
         echo ::set-output name=NAME::"${files[0]}"
     
     - name: Upload so artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.libname.outputs.NAME }}
         path: ./build/${{ steps.libname.outputs.NAME }}
         if-no-files-found: error
 
     - name: Upload qmod artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: ${{env.qmodName}}.qmod
         path: ./${{ env.qmodName }}.qmod
