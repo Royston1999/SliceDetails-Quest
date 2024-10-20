@@ -13,17 +13,17 @@
     {
       "version": "^0.2.0",
       "id": "lapiz",
-      "downloadIfMissing": "https://github.com/raineio/Lapiz/releases/download/v0.2.11/Lapiz.qmod"
+      "downloadIfMissing": "https://github.com/raineio/Lapiz/releases/download/v0.2.12/Lapiz.qmod"
     },
     {
       "version": "^0.17.0",
       "id": "custom-types",
-      "downloadIfMissing": "https://github.com/QuestPackageManager/Il2CppQuestTypePatching/releases/download/v0.17.8/CustomTypes.qmod"
+      "downloadIfMissing": "https://github.com/QuestPackageManager/Il2CppQuestTypePatching/releases/download/v0.17.10/CustomTypes.qmod"
     },
     {
       "version": "^0.4.24",
       "id": "bsml",
-      "downloadIfMissing": "https://github.com/RedBrumbler/Quest-BSML/releases/download/v0.4.42/BSML.qmod"
+      "downloadIfMissing": "https://github.com/RedBrumbler/Quest-BSML/releases/download/v0.4.43/BSML.qmod"
     },
     {
       "version": "^3.6.3",
@@ -36,7 +36,7 @@
     "libslicedetails.so"
   ],
   "libraryFiles": [
-    "libbeatsaber-hook_5_1_7.so"
+    "libbeatsaber-hook_5_1_9.so"
   ],
   "fileCopies": [],
   "copyExtensions": []
