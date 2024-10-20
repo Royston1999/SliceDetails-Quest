@@ -93,7 +93,7 @@ jobs:
 
     # if we had a tag, we should make a release
     - name: Upload release artifacts
-      if: startsWith(github.ref, 'refs/tags/v')
+      if: ${{ github.event_name == 'workflow_dispatch' }}
       id: upload_file_release
       uses: softprops/action-gh-release@v0.1.15
       with:
