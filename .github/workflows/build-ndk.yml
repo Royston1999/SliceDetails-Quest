@@ -2,29 +2,13 @@ name: NDK build
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - "v*"
-    branches:
-      - 'master'
-      - 'main'
-      - 'dev/*'
-      - 'feat/*'
-      - 'fix/*'
-    paths-ignore:
-      - '**.yml'
-      - '!.github/workflows/build-ndk.yml'
-      - '**.json'
-      - '!qpm.json'
-      - '!qpm.shared.json'
-      - '!mod.template.json'
-      - '**.txt'
-      - '!CMakeLists.txt'
-      - '**.ps1'
-      - '!build.ps1'
-      - '!createqmod.ps1'
-      - '**.md'
-      - '.gitignore'
+    inputs:
+      version:
+        description: 'tag name'
+        required: true
+      release_msg:
+        description: 'release title'
+        required: true
   pull_request:
     branches:
         - 'master'
@@ -104,7 +88,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{env.qmod_name}}.qmod
-        path: ./${{ env.qmod_name }}.qmod
+        path: ./${{ env.qmod_name }}_${{ github.event.inputs.version }}.qmod
         if-no-files-found: error
 
     # if we had a tag, we should make a release
