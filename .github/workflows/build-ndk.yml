@@ -35,7 +35,7 @@ on:
 
 env:
     module_id: slicedetails
-    qmodName: SliceDetails
+    qmod_name: SliceDetails
 
 jobs:
   build:
@@ -83,7 +83,7 @@ jobs:
         pwsh -Command ./build.ps1
     - name: Create Qmod
       run: |
-        pwsh -Command ./buildQMOD.ps1 ${{ env.qmodName }}_${{ github.event.inputs.version }}
+        pwsh -Command ./buildQMOD.ps1 ${{ env.qmod_name }}_${{ github.event.inputs.version }}
 
     - name: Get Library Name
       id: libname
