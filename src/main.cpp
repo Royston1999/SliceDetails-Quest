@@ -50,6 +50,7 @@ SLICE_DETAILS_EXPORT_FUNC void setup(CModInfo& info) {
     getLogger().info("Completed setup!");
 }
 
+#if !NO_GIMMICK
 //ha ha funny skilly issue
 MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self) {
     levelview(self);
@@ -61,6 +62,7 @@ MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, Stand
         });
     }).detach();
 }
+#endif
 
 void DidActivate(HMUI::ViewController* self, bool firstActivation, bool two, bool three)
 {
@@ -84,7 +86,9 @@ SLICE_DETAILS_EXPORT_FUNC void late_load() {
     custom_types::Register::AutoRegister();
     BSML::Register::RegisterSettingsMenu("Slice Details", &DidActivate, false);
 
+#if !NO_GIMMICK
     INSTALL_HOOK(getLogger(), levelview);
+#endif
 
     using namespace Lapiz::Zenject::ZenjectExtensions;
     using namespace Lapiz::Zenject;
