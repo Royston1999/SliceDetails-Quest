@@ -13,6 +13,7 @@
   },
   "workspace": {
     "scripts": {},
+    "ndk": "^27.2.12479018",
     "qmodIncludeDirs": [
       "./build",
       "./extern/libs"
