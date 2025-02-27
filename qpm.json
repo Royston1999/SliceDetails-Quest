@@ -5,7 +5,7 @@
   "info": {
     "name": "Slice Details",
     "id": "slicedetails",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "url": null,
     "additionalData": {
       "overrideSoName": "libslicedetails.so"

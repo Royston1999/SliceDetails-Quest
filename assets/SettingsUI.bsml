@@ -1,6 +1,0 @@
-<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
-    <settings-container>
-        <toggle-setting text="Enable in Pause Menu"/>
-        <toggle-setting text="Enable on Results Screen"/>
-    </settings-container>
-</bg>

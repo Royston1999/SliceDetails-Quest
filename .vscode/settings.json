@@ -120,7 +120,8 @@
         "source_location": "cpp",
         "__std_stream": "cpp",
         "memory_resource": "cpp",
-        "__functional_03": "cpp"
+        "__functional_03": "cpp",
+        "__memory": "cpp"
     },
     "cmake.configureOnOpen": false
 }

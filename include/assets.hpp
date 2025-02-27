@@ -50,7 +50,6 @@ namespace IncludedAssets {
 	DECLARE_FILE(NoteInfoUI_bsml)
 	DECLARE_FILE(NoteUIModal_bsml)
 	DECLARE_FILE(PanelScreen_bsml)
-	DECLARE_FILE(SettingsUI_bsml)
 	DECLARE_FILE(StatsPanel_bsml)
 	DECLARE_FILE(arrow_png)
 	DECLARE_FILE(bloq_png)

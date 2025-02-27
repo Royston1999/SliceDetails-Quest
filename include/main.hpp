@@ -17,4 +17,4 @@
 
 // Define these functions here so that we can easily read configuration and log information from other files
 Configuration& getConfig();
-const Paper::ConstLoggerContext<13UL>& getLogger();
+const Paper::ConstLoggerContext<sizeof(MOD_ID)>& getLogger();

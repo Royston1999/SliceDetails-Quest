@@ -11,18 +11,16 @@
 #include "Zenject/FromBinderNonGeneric.hpp"
 #include "Zenject/ConcreteIdBinderGeneric_1.hpp"
 #include "UI/SliceDetailsFloatingScreen.hpp"
-#include "bsml/shared/BSML.hpp"
-#include "bsml/shared/BSML/Components/Settings/ToggleSetting.hpp"
-#include "UnityEngine/UI/Toggle.hpp"
-#include "UnityEngine/Events/UnityAction_1.hpp"
 #include "lapiz/shared/utilities/ZenjectExtensions.hpp"
 #include "Controllers/GameCoreController.hpp"
 #include "Controllers/PauseController.hpp"
 #include "Controllers/MenuController.hpp"
 #include "UI/StatsPanel.hpp"
 #include "GlobalNamespace/GameplayCoreInstaller.hpp"
-#include "DelegateUtils.hpp"
 #include "lapiz/shared/utilities/MainThreadScheduler.hpp"
+#include "bsml/shared/BSML-Lite.hpp"
+#include "bsml/shared/BSML.hpp"
+#include "bsml/shared/BSML/MainThreadScheduler.hpp"
 
 using namespace UnityEngine;
 using namespace GlobalNamespace;
@@ -39,8 +37,8 @@ Configuration& getConfig() {
     return config;
 }
 
-const Paper::ConstLoggerContext<13UL>& getLogger() {
-    static constexpr auto Logger = Paper::ConstLoggerContext("slicedetails");
+const Paper::ConstLoggerContext<sizeof(MOD_ID)>& getLogger() {
+    static constexpr auto Logger = Paper::ConstLoggerContext(MOD_ID);
     return Logger;
 }
 
@@ -55,28 +53,34 @@ SLICE_DETAILS_EXPORT_FUNC void setup(CModInfo& info) {
 MAKE_HOOK_MATCH(levelview, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self) {
     levelview(self);
     auto* text = self->get_practiceButton()->get_transform()->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
-    std::thread([text](){ 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        Lapiz::Utilities::MainThreadScheduler::Schedule([text]() {
-            text->set_text("Skill Issue");
-        });
-    }).detach();
+    BSML::MainThreadScheduler::ScheduleNextFrame([text]() {
+        text->set_text("Skill Issue");
+    });
 }
 #endif
 
 void DidActivate(HMUI::ViewController* self, bool firstActivation, bool two, bool three)
 {
     if (!firstActivation) return;
-    BSML::parse_and_construct(IncludedAssets::SettingsUI_bsml, self->get_transform());
-    auto toggles = self->get_transform()->GetComponentsInChildren<BSML::ToggleSetting*>();
-    Toggle *pToggle = toggles[0]->toggle, *rToggle = toggles[1]->toggle;
-    ToggleDelegate *pDel = nullptr, *rDel = nullptr;
-    pDel += DelegateW<ToggleDelegate>([](bool value){getSliceDetailsConfig().inPause.SetValue(value);});
-    rDel += DelegateW<ToggleDelegate>([](bool value){getSliceDetailsConfig().inResults.SetValue(value);});
-    pToggle->___onValueChanged->AddListener(pDel);
-    rToggle->___onValueChanged->AddListener(rDel);
-    pToggle->set_isOn(getSliceDetailsConfig().inPause.GetValue());
-    rToggle->set_isOn(getSliceDetailsConfig().inResults.GetValue());
+    auto container = BSML::Lite::CreateScrollableSettingsContainer(self->get_transform());
+    BSML::Lite::CreateToggle(container->get_transform(), "Enable in Pause Menu", getSliceDetailsConfig().inPause.GetValue(), [](bool value) { 
+        getSliceDetailsConfig().inPause.SetValue(value); 
+    });
+    BSML::Lite::CreateToggle(container->get_transform(), "Enable on Results Screen", getSliceDetailsConfig().inResults.GetValue(), [](bool value) { 
+        getSliceDetailsConfig().inResults.SetValue(value); 
+    });
+
+    auto horiz = BSML::Lite::CreateHorizontalLayoutGroup(container->get_transform());
+    
+    BSML::Lite::CreateUIButton(horiz->get_transform(), "Reset Pause Position", UnityEngine::Vector2({0, 0}), {32, 8}, []() {
+        getSliceDetailsConfig().pauseRot.SetValue(getSliceDetailsConfig().pauseRot.GetDefaultValue());
+        getSliceDetailsConfig().pausePos.SetValue(getSliceDetailsConfig().pausePos.GetDefaultValue());
+    });
+
+    BSML::Lite::CreateUIButton(horiz->get_transform(), "Reset Results Position", UnityEngine::Vector2({0, 0}), {35, 8}, []() {
+        getSliceDetailsConfig().resultsRot.SetValue(getSliceDetailsConfig().resultsRot.GetDefaultValue());
+        getSliceDetailsConfig().resultsPos.SetValue(getSliceDetailsConfig().resultsPos.GetDefaultValue());
+    });
 }
 
 SLICE_DETAILS_EXPORT_FUNC void late_load() {
