@@ -81,7 +81,7 @@ namespace SliceDetails
     void SliceDetailsFloatingScreen::UpdatePanelScreen()
     {
         for (int i = 0; i<12; i++){
-            bool hasData = gridNotes[i]->cutCount != 0;
+            bool hasData = gridNotes[i]->getCombinedNoteInfo().cutCount != 0;
             PanelUI* panel = panelScreen->panelImages[i];
             panel->hoverText = hasData ? gridNotes[i]->getAverageValueStringData() : std::string();
             panel->noteCutText->get_gameObject()->set_active(hasData);

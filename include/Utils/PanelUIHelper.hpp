@@ -16,16 +16,14 @@
 #include "GlobalNamespace/Signal.hpp"
 
 #define INTERFACES \
-    { \
-        classof(UnityEngine::EventSystems::IPointerEnterHandler*), classof(UnityEngine::EventSystems::IPointerClickHandler*), \
-        classof(UnityEngine::EventSystems::IPointerExitHandler*), classof(UnityEngine::EventSystems::IEventSystemHandler*) \
-    } \
+    UnityEngine::EventSystems::IPointerEnterHandler*, UnityEngine::EventSystems::IPointerClickHandler*, \
+    UnityEngine::EventSystems::IPointerExitHandler*, UnityEngine::EventSystems::IEventSystemHandler*
 
-DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, PanelUIHelper, UnityEngine::MonoBehaviour, std::vector<Il2CppClass*>(INTERFACES),
+DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, PanelUIHelper, UnityEngine::MonoBehaviour, INTERFACES) {
 
-    DECLARE_OVERRIDE_METHOD(void, OnPointerEnter, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter>::methodInfo());
-    DECLARE_OVERRIDE_METHOD(void, OnPointerClick, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerClickHandler::OnPointerClick>::methodInfo());
-    DECLARE_OVERRIDE_METHOD(void, OnPointerExit, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit>::methodInfo());
+    DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerEnter, &::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter);
+    DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerClick, &::UnityEngine::EventSystems::IPointerClickHandler::OnPointerClick);
+    DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerExit, &::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit);
 
     public:
     static PanelUIHelper* AddPanelHelper(SliceDetailsFloatingScreen* screen, PanelUI* panelUI);
@@ -35,6 +33,6 @@ DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, PanelUIHelper, UnityEngine::MonoB
     GlobalNamespace::Signal* buttonClickedSignal;
     void Vibrate(bool left);
     void UnFuckModal();
-)
+};
 
 #undef INTERFACES

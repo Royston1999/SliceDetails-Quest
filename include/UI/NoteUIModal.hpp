@@ -1,7 +1,5 @@
 #pragma once
 
-#include "System/IDisposable.hpp"
-#include "Zenject/IInitializable.hpp"
 #include "custom-types/shared/macros.hpp"
 #include "lapiz/shared/macros.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
@@ -15,7 +13,7 @@
 #include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
 #include "System/Object.hpp"
 
-DECLARE_CLASS_CODEGEN(SliceDetails, NoteUIModal, System::Object,
+DECLARE_CLASS_CODEGEN(SliceDetails, NoteUIModal, System::Object) {
 
     DECLARE_INSTANCE_FIELD(HMUI::ModalView*, modal);
 
@@ -29,5 +27,4 @@ DECLARE_CLASS_CODEGEN(SliceDetails, NoteUIModal, System::Object,
     UnityEngine::Color leftHand;
     UnityEngine::Color rightHand;
     SliceDetails::GridDotsViewController* gridDots;
-)
-
+};

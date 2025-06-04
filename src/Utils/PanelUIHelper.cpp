@@ -80,7 +80,7 @@ namespace SliceDetails
 
     void PanelUIHelper::OnPointerEnter()
     {
-        if (sliceDetails->gridNotes[panel->index]->cutCount == 0) return;
+        if (sliceDetails->gridNotes[panel->index]->getCombinedNoteInfo().cutCount == 0) return;
         if (sliceDetails->grabbingHandle) return;
         Vibrate(!GetVRPointer()->____lastSelectedControllerWasRight);
         panel->background->set_color(Color(0.70f, 0.70f, 0.70f, 1.0f));
@@ -89,7 +89,7 @@ namespace SliceDetails
 
     void PanelUIHelper::OnPointerClick()
     {
-        if (sliceDetails->gridNotes[panel->index]->cutCount == 0) return;
+        if (sliceDetails->gridNotes[panel->index]->getCombinedNoteInfo().cutCount == 0) return;
         if (buttonClickedSignal) buttonClickedSignal->Raise();
         sliceDetails->UpdateNoteInfoUI(panel->index);
         sliceDetails->panelScreen->noteUIModal->modal->Show(true, true, nullptr);

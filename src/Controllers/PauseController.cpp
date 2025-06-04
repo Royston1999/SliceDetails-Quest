@@ -14,15 +14,13 @@ namespace SliceDetails
     {
         this->sliceDetails = sliceDetails;
         this->gamePause = reinterpret_cast<GamePause*>(gamePause);
-        this->onPause = {&PauseController::OnPause, this};
-        this->onUnPause = {&PauseController::OnUnPause, this};
     }
 
     void PauseController::Initialize()
     {
         getLogger().debug("Initialising Pause Controller");
-        gamePause->___didPauseEvent += onPause;
-        gamePause->___willResumeEvent += onUnPause;
+        gamePause->___didPauseEvent += DelegateW{&PauseController::OnPause, this};
+        gamePause->___willResumeEvent += DelegateW{&PauseController::OnUnPause, this};
     }
 
     void PauseController::OnPause()
@@ -39,7 +37,7 @@ namespace SliceDetails
     {
         getLogger().debug("Disposing Pause Controller");
         sliceDetails->OnUnPause();
-        gamePause->___didPauseEvent -= onPause;
-        gamePause->___willResumeEvent -= onUnPause;
+        gamePause->___didPauseEvent -= DelegateW{&PauseController::OnPause, this};
+        gamePause->___willResumeEvent -= DelegateW{&PauseController::OnUnPause, this};
     }
 }

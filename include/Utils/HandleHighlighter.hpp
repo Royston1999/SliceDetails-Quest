@@ -16,18 +16,16 @@
 #include "UnityEngine/MeshRenderer.hpp"
 
 #define INTERFACES \
-    { \
-        classof(UnityEngine::EventSystems::IPointerEnterHandler*), classof(UnityEngine::EventSystems::IPointerDownHandler*), \
-        classof(UnityEngine::EventSystems::IPointerExitHandler*), classof(UnityEngine::EventSystems::IPointerUpHandler*), \
-        classof(UnityEngine::EventSystems::IEventSystemHandler*) \
-    } \
+    UnityEngine::EventSystems::IPointerEnterHandler*, UnityEngine::EventSystems::IPointerDownHandler*, \
+    UnityEngine::EventSystems::IPointerExitHandler*, UnityEngine::EventSystems::IPointerUpHandler*, \
+    UnityEngine::EventSystems::IEventSystemHandler* 
 
-DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, HandleHighlighter, UnityEngine::MonoBehaviour, std::vector<Il2CppClass*>(INTERFACES),
+DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, HandleHighlighter, UnityEngine::MonoBehaviour, INTERFACES) {
 
-    DECLARE_OVERRIDE_METHOD(void, OnPointerEnter, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter>::methodInfo());
-    DECLARE_OVERRIDE_METHOD(void, OnPointerDown, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerDownHandler::OnPointerDown>::methodInfo());
-    DECLARE_OVERRIDE_METHOD(void, OnPointerUp, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerUpHandler::OnPointerUp>::methodInfo());
-    DECLARE_OVERRIDE_METHOD(void, OnPointerExit, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit>::methodInfo());
+    DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerEnter, &::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter);
+    DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerDown, &::UnityEngine::EventSystems::IPointerDownHandler::OnPointerDown);
+    DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerUp, &::UnityEngine::EventSystems::IPointerUpHandler::OnPointerUp);
+    DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerExit, &::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit);
     DECLARE_INSTANCE_METHOD(void, Start);
 
     public:
@@ -35,6 +33,6 @@ DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, HandleHighlighter, UnityEngine::M
     bool hoveringHandle = false;
     private:
     SliceDetailsFloatingScreen* floater;
-)
+};
 
 #undef INTERFACES

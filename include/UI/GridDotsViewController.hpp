@@ -1,7 +1,5 @@
 #pragma once
 
-#include "System/IDisposable.hpp"
-#include "Zenject/IInitializable.hpp"
 #include "custom-types/shared/macros.hpp"
 #include "lapiz/shared/macros.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
@@ -10,16 +8,17 @@
 #include "UnityEngine/Quaternion.hpp"
 #include "HMUI/ViewController.hpp"
 #include "HMUI/ImageView.hpp"
+#include "System/IDisposable.hpp"
+#include "Zenject/IInitializable.hpp"
 
-#define INTERFACES {classof(System::IDisposable*), classof(Zenject::IInitializable*)} \
+#define INTERFACES System::IDisposable*, Zenject::IInitializable*
 
-DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, GridDotsViewController, HMUI::ViewController, std::vector<Il2CppClass*>(INTERFACES),
+DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, GridDotsViewController, HMUI::ViewController, INTERFACES) {
     
-    DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::HMUI::ViewController::DidActivate>::methodInfo(), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
-
+    DECLARE_OVERRIDE_METHOD_MATCH(void, DidActivate, &::HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
 
     public:
     HMUI::ImageView* gridDots[12];
-)
+};
 
 #undef INTERFACES

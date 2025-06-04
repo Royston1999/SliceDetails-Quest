@@ -1,89 +1,89 @@
 #pragma once
 #include "custom-types/shared/delegate.hpp"
 
-namespace DelegateUtils
-{
-    template <typename T>
+namespace DelegateUtils {
+    template<typename T, typename O>
     struct delegate_func;
 
     template <typename TRet, typename T, typename... TArgs>
-    struct delegate_func<TRet(T::*)(TArgs...)>
-    {
-        using FuncType = TRet(TArgs...);
+    struct delegate_func<TRet(T::*)(TArgs...), void> {
+        using FuncPtr = TRet(*)(TArgs...);
     };
-
-    template<typename T>
-    using delegate_func_t = typename delegate_func<decltype(&T::Invoke)>::FuncType;
-
-    template <typename O, typename T>
-    struct delegate_mem_func;
 
     template <typename O, typename TRet, typename T, typename... TArgs>
-    struct delegate_mem_func<O, TRet(T::*)(TArgs...)>
-    {
-        using MemFuncPtr = TRet(O::*)(TArgs...);
+    struct delegate_func<TRet(T::*)(TArgs...), O> {
+        using FuncPtr = TRet(O::*)(TArgs...);
     };
 
-    template<typename O, typename T>
-    using delegate_mem_func_t = typename delegate_mem_func<O, decltype(&T::Invoke)>::MemFuncPtr;
+    template<typename T, typename O>
+    using delegate_func_t = typename delegate_func<decltype(&T::Invoke), O>::FuncPtr;
+
+    template<typename T = void*, typename O = void>
+    struct DelegateW {
+        T funcPtr;
+        O* objPtr;
+        DelegateW(T f, O* o = nullptr) : funcPtr(f), objPtr(o) {}
+    };
+
+    template<typename T>
+    concept Delegate = std::is_convertible_v<T*, System::MulticastDelegate*>;
+
+    template <typename T, typename O, typename TRet, typename... TArgs>
+    inline T* make_delegate(const DelegateW<TRet(O::*)(TArgs...), O>& func) {
+        return custom_types::MakeDelegate<T*>(func.objPtr, std::function<TRet(O*, TArgs...)>(func.funcPtr));
+    }
+
+    template <typename T, typename TRet, typename... TArgs>
+    inline T* make_delegate(const DelegateW<TRet(*)(TArgs...), void>& func) {
+        return custom_types::MakeDelegate<T*>(std::function<TRet(TArgs...)>(func.funcPtr));
+    }
+
+    template<typename T, typename U>
+    inline bool compare_function(const std::function<T>& function, U fptr) {
+        auto val = function.template target<decltype(fptr)>();
+        return val && *val == fptr;
+    }
 
     template <typename O, typename TRet, typename... TArgs>
-    const auto wrap_member_function(TRet(O::*fp)(TArgs...), O* obj)
-    {
-        std::function<TRet(TArgs...)> wrapper = [fp, obj](TArgs... args) { return (obj->*fp)(args...); };
-        return wrapper;
+    inline bool compare_delegate(System::Object* inst, const DelegateW<TRet(O::*)(TArgs...), O>& func) {
+        auto opt = il2cpp_utils::try_cast<custom_types::DelegateWrapperInstance<TRet, O*, TArgs...>>(inst);
+        if (!opt.has_value()) return false;
+        return opt.value()->obj == func.objPtr && compare_function(opt.value()->wrappedFunc, func.funcPtr);
     }
 
-    template<typename T>
-    struct DelegateW
-    {
-        static_assert(std::is_convertible_v<T*, System::MulticastDelegate*>, "T must be a delegate type");
-        DelegateW() {}
-        DelegateW(std::function<delegate_func_t<T>> function)
-        {
-            this->internalCSharpDelegate = custom_types::MakeDelegate<T*>(function);
-        }
-        DelegateW(const DelegateW<T>& other) : internalCSharpDelegate(other.internalCSharpDelegate) {}
-
-        template<typename O>
-        DelegateW(delegate_mem_func_t<O,T> function, O* object)
-        {
-            this->internalCSharpDelegate = custom_types::MakeDelegate<T*>(wrap_member_function(function, object));
-        }
-
-        DelegateW<T>& operator=(DelegateW<T>&& other)
-        {
-            this->internalCSharpDelegate = other.internalCSharpDelegate ? other.internalCSharpDelegate.ptr() : nullptr;
-            return *this;
-        }
-        DelegateW<T>& operator=(std::function<delegate_func_t<T>> function)
-        {
-            this->internalCSharpDelegate = custom_types::MakeDelegate<T*>(function);
-            return *this;
-        }
-        constexpr SafePtr<T>* operator->() noexcept { return &internalCSharpDelegate; }
-        constexpr SafePtr<T> const* operator->() const noexcept { return &internalCSharpDelegate; }
-        constexpr operator bool() const noexcept { return internalCSharpDelegate; }
-
-        private:
-        SafePtr<T> internalCSharpDelegate;
-    };
-
-    template<typename T>
-    requires (std::is_convertible_v<T*, System::MulticastDelegate*>)
-    void operator+=(T*& csDelegate, DelegateW<T> delegateW) noexcept
-    {
-        if (!delegateW) return;
-        T* newDelegate = reinterpret_cast<T*>(System::Delegate::Combine(csDelegate, delegateW->ptr()));
-        csDelegate = newDelegate;
+    template <typename TRet, typename... TArgs>
+    inline bool compare_delegate(System::Object* inst, const DelegateW<TRet(*)(TArgs...), void>& func) {
+        auto opt = il2cpp_utils::try_cast<custom_types::DelegateWrapperStatic<TRet, TArgs...>>(inst);
+        if (!opt.has_value()) return false;
+        return compare_function(opt.value()->wrappedFunc, func.funcPtr);
     }
 
-    template<typename T>
-    requires (std::is_convertible_v<T*, System::MulticastDelegate*>)
-    void operator-=(T*& csDelegate, DelegateW<T>& delegateW)
-    {
-        if (!delegateW) return;
-        T* newDelegate = reinterpret_cast<T*>(System::Delegate::Remove(csDelegate, delegateW->ptr()));
-        csDelegate = newDelegate;
+    template<Delegate T, typename O>
+    inline T* extract_delegate(T*& csDelegate, const DelegateW<delegate_func_t<T, O>, O>& func) {
+        std::vector<System::Delegate*> delegates;
+        delegates.push_back(csDelegate);
+        if (csDelegate->delegates) delegates.insert(delegates.end(), csDelegate->delegates.begin(), csDelegate->delegates.end());
+        
+        for (System::Delegate* currentDeleg : delegates | std::views::reverse) {
+            if (!currentDeleg || !currentDeleg->m_target) continue;
+            if (!compare_delegate(currentDeleg->m_target, func)) continue;
+            return static_cast<T*>(currentDeleg);
+        }
+        return nullptr;
+    }
+
+    template<Delegate T, typename O>
+    void operator+=(T*& csDelegate, const DelegateW<delegate_func_t<T, O>, O>& func) {
+        T* delegate = make_delegate<T>(func);
+        csDelegate = static_cast<T*>(System::Delegate::Combine(csDelegate, delegate));
+    }
+
+    template<Delegate T, typename O>
+    void operator-=(T*& csDelegate, const DelegateW<delegate_func_t<T, O>, O>& func) {
+        if (!csDelegate) return;
+
+        T* delegate = extract_delegate(csDelegate, func);
+        if (!delegate) return;
+        csDelegate = static_cast<T*>(System::Delegate::Remove(csDelegate, delegate));
     }
 }

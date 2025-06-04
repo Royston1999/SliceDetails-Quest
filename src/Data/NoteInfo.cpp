@@ -17,6 +17,16 @@ SliceDetails::NoteInfo::NoteInfo(){
     cutCount = 0;
 }
 
+SliceDetails::NoteInfo& SliceDetails::NoteInfo::operator+=(const SliceDetails::NoteInfo& other) {
+    this->cutAngle += other.cutAngle;
+    this->cutOffset += other.cutOffset;
+    this->preswing += other.preswing;
+    this->postswing += other.postswing;
+    this->offset += other.offset;
+    this->cutCount += other.cutCount;
+    return *this;
+}
+
 void SliceDetails::NoteInfo::addNewNoteData(float pre, float post, float acc, float angle, float off){
     cutAngle += angle;
     cutOffset += off;
@@ -34,4 +44,9 @@ std::string SliceDetails::NoteInfo::getAverageValueStringData(){
     // std::string hoverHintString = "Average Score - " + averageScore + " (" + averagePre + ", " + averagePost + ", " + averageAcc + ")";
     std::string hoverHintString = "<u>Total Score</u>  -  <color=#00B300><color=#05BCFF>" + averageScore + " <color=black>/</color></color> 115</color>\n<u>Pre Swing</u>  -  <color=#00B300><color=#05BCFF>" + averagePre + " <color=black>/</color></color> 70</color>\n<u>Post Swing</u>  -  <color=#00B300><color=#05BCFF>" + averagePost + " <color=black>/</color></color> 30</color>\n<u>Accuracy</u>  -  <color=#00B300><color=#05BCFF>" + averageAcc + " <color=black>/</color></color> 15</color>\n<u>Notes Cut</u>  -  <color=#05BCFF>" + std::to_string(cutCount) + "</color>";
     return hoverHintString;
+}
+
+std::string SliceDetails::NoteInfo::getAverageScoreString(){
+    std::string averageScore = Round((preswing + postswing + offset)/cutCount, 2);
+    return averageScore;
 }

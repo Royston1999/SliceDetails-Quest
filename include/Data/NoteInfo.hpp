@@ -14,6 +14,8 @@ namespace SliceDetails{
         NoteInfo();
         void addNewNoteData(float pre, float post, float acc, float angle, float off);
         std::string getAverageValueStringData();
+        std::string getAverageScoreString();
         std::string Round(float value, int precision);
+        NoteInfo& operator+=(const NoteInfo& other);
     };
 }

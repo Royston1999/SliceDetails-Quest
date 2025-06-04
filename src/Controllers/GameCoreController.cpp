@@ -22,12 +22,6 @@ namespace SliceDetails
         this->scoreController = reinterpret_cast<ScoreController*>(controller);
         this->sliceDetails->leftHand = colorScheme->get_saberAColor();
         this->sliceDetails->rightHand = colorScheme->get_saberBColor();
-        this->onFinishDelegate = [this](ScoringElement* element)
-        {
-            std::optional<GoodCutScoringElement*> goodCut = il2cpp_utils::try_cast<GoodCutScoringElement>(element);
-            if (!goodCut.has_value()) return;
-            HandleSwingFinish((*goodCut)->____cutScoreBuffer);
-        };
     }
 
     void GameCoreController::Initialize()
@@ -36,10 +30,17 @@ namespace SliceDetails
         sliceDetails->InitialiseUI();
         sliceDetails->ClearNoteData();
 
-        scoreController->___scoringForNoteFinishedEvent += onFinishDelegate;
+        scoreController->___scoringForNoteFinishedEvent += DelegateW{&GameCoreController::OnScoreFinish, this};
     }
 
-    int GetNotePosIndex(NoteData* noteData)
+    void GameCoreController::OnScoreFinish(GlobalNamespace::ScoringElement* scoringElement)
+    {
+        std::optional<GoodCutScoringElement*> goodCut = il2cpp_utils::try_cast<GoodCutScoringElement>(scoringElement);
+        if (!goodCut.has_value()) return;
+        HandleSwingFinish((*goodCut)->____cutScoreBuffer);
+    }
+
+    inline int GetNotePosIndex(NoteData* noteData)
     {
         int notePosIndex;
         switch (noteData->get_cutDirection()){
@@ -69,7 +70,7 @@ namespace SliceDetails
         return notePosIndex;
     }
 
-    int GetNoteGridIndex(NoteData* noteData)
+    inline int GetNoteGridIndex(NoteData* noteData)
     {
         return (2 - (int)noteData->get_noteLineLayer()) * 4 + noteData->get_lineIndex();
     }
@@ -78,7 +79,7 @@ namespace SliceDetails
     {
         NoteData* noteData = self->get_noteCutInfo().noteData;
         NoteCutInfo& noteCutInfo = self->____noteCutInfo;
-        if (noteData->get_scoringType() == NoteData::ScoringType::BurstSliderElement) return;
+        if (noteData->get_gameplayType() == NoteData::GameplayType::BurstSliderElement) return;
         if (noteData->get_colorType() == ColorType::None || !noteCutInfo.get_allIsOK()) return;
 
         int yPos = (int)noteData->get_noteLineLayer();
@@ -93,17 +94,16 @@ namespace SliceDetails
         if (Vector3::Dot(noteCutInfo.cutNormal, Vector3::op_Subtraction(noteCutInfo.cutPoint, noteCutInfo.notePosition)) > 0.0f) cutOffset = -cutOffset;
 
         int preSwing = self->get_beforeCutScore();
-        int postSwing = noteData->get_scoringType() == NoteData::ScoringType::BurstSliderHead ? 30 : self->get_afterCutScore();
+        int postSwing = noteData->get_gameplayType() == NoteData::GameplayType::BurstSliderHead ? 30 : self->get_afterCutScore();
         int offset = self->get_centerDistanceCutScore();
         float cutAngle = noteCutInfo.cutDirDeviation;
 
         sliceDetails->gridNotes[noteGridIndex]->notes[notePosIndex]->addNewNoteData(preSwing, postSwing, offset, cutAngle, cutOffset);
-        sliceDetails->gridNotes[noteGridIndex]->addNewGridPosData(preSwing, postSwing, offset);
     }
 
     void GameCoreController::Dispose()
     {
         getLogger().debug("Disposing GameCore Controller");
-        scoreController->___scoringForNoteFinishedEvent -= onFinishDelegate;
+        scoreController->___scoringForNoteFinishedEvent -= DelegateW{&GameCoreController::OnScoreFinish, this};
     }
 }

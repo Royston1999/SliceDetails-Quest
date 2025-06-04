@@ -1,7 +1,5 @@
 #pragma once
 
-#include "System/IDisposable.hpp"
-#include "Zenject/IInitializable.hpp"
 #include "custom-types/shared/macros.hpp"
 #include "lapiz/shared/macros.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
@@ -15,7 +13,7 @@
 #include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
 #include "System/Object.hpp"
 
-DECLARE_CLASS_CODEGEN(SliceDetails, StatsPanel, System::Object,
+DECLARE_CLASS_CODEGEN(SliceDetails, StatsPanel, System::Object) {
 
     DECLARE_INSTANCE_FIELD(HMUI::ImageView*, border);
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, text);
@@ -27,5 +25,4 @@ DECLARE_CLASS_CODEGEN(SliceDetails, StatsPanel, System::Object,
     void ActivatePanel(UnityEngine::Transform* parent, UnityEngine::Vector3 position, std::string text);
     void DeactivatePanel();
     void InitialiseUI(UnityEngine::Transform* parent);
-)
-
+};

@@ -13,21 +13,19 @@
 #include "UI/SliceDetailsFloatingScreen.hpp"
 
 #define INTERFACES \
-    { \
-        classof(UnityEngine::EventSystems::IPointerEnterHandler*), \
-        classof(UnityEngine::EventSystems::IPointerExitHandler*), classof(UnityEngine::EventSystems::IEventSystemHandler*) \
-    } \
+    UnityEngine::EventSystems::IPointerEnterHandler*, \
+    UnityEngine::EventSystems::IPointerExitHandler*, UnityEngine::EventSystems::IEventSystemHandler*
 
-DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, NoteUIHelper, UnityEngine::MonoBehaviour, std::vector<Il2CppClass*>(INTERFACES),
+DECLARE_CLASS_CODEGEN_INTERFACES(SliceDetails, NoteUIHelper, UnityEngine::MonoBehaviour, INTERFACES) {
 
-    DECLARE_OVERRIDE_METHOD(void, OnPointerEnter, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter>::methodInfo());
-    DECLARE_OVERRIDE_METHOD(void, OnPointerExit, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit>::methodInfo());
+    DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerEnter, &::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter);
+    DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerExit, &::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit);
 
     public:
     static NoteUIHelper* AddNoteHelper(SliceDetailsFloatingScreen* screen, NoteUI* noteUI);
     private:
     NoteUI* note;
     SliceDetailsFloatingScreen* sliceDetails;
-)
+};
 
 #undef INTERFACES

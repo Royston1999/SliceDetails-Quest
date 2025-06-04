@@ -6,7 +6,7 @@
 #include "HMUI/ModalView.hpp"
 #include "Utils/HandleHighlighter.hpp"
 
-DECLARE_CLASS_CODEGEN(SliceDetails, ModalCloseHandler, UnityEngine::MonoBehaviour,
+DECLARE_CLASS_CODEGEN(SliceDetails, ModalCloseHandler, UnityEngine::MonoBehaviour) {
 
     DECLARE_INSTANCE_METHOD(void, FixedUpdate);
     DECLARE_INSTANCE_METHOD(void, OnEnable);
@@ -17,4 +17,4 @@ DECLARE_CLASS_CODEGEN(SliceDetails, ModalCloseHandler, UnityEngine::MonoBehaviou
     SliceDetailsFloatingScreen* sliceDetails;
     HandleHighlighter* high;
     bool justEnabled;
-)
+};

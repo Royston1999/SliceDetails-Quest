@@ -21,13 +21,17 @@
 #include "bsml/shared/BSML-Lite.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "bsml/shared/BSML/MainThreadScheduler.hpp"
+// #include "DelegateWrapper.hpp"
+#include "System/Action_1.hpp"
+#include "DelegateUtils.hpp"
+// #include "TestType.hpp"
 
 using namespace UnityEngine;
 using namespace GlobalNamespace;
 using namespace SliceDetails;
 using namespace UnityEngine::UI;
+// using namespace DelegateUtilsTwo;
 using namespace DelegateUtils;
-using ToggleDelegate = UnityEngine::Events::UnityAction_1<bool>;
 
 static modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
 
@@ -121,6 +125,11 @@ SLICE_DETAILS_EXPORT_FUNC void late_load() {
         auto screen = container->Resolve<SliceDetailsFloatingScreen*>();
         if (!screen->DisplayInPause()) return;
         container->BindInterfacesAndSelfTo<PauseController*>()->AsSingle();
+
+        // test interface stuff
+        // container->BindInterfacesAndSelfTo<TestType*>()->AsSingle();
+        // container->BindInterfacesAndSelfTo<TestTypeTwo*>()->AsSingle();
+        // container->BindInterfacesAndSelfTo<TestTypeZenject*>()->AsSingle();
     });
 
     zenjector->Install(Location::Menu, [](DiContainer* container)

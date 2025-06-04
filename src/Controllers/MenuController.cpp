@@ -13,18 +13,15 @@ namespace SliceDetails
         this->sliceDetails = sliceDetails;
         this->results = results;
         this->multiResults = multiResults;
-
-        this->onResultsActivate = {&MenuController::OnResultsActivate, this};
-        this->onResultsDeactivate = {&MenuController::OnResultsDeactivate, this};
     }
 
     void MenuController::Initialize()
     {
         getLogger().debug("Initialising Menu Controller");
-        results->___didActivateEvent += onResultsActivate;
-        results->___didDeactivateEvent += onResultsDeactivate;
-        multiResults->___didActivateEvent += onResultsActivate;
-        multiResults->___didDeactivateEvent += onResultsDeactivate;
+        results->___didActivateEvent += DelegateW{&MenuController::OnResultsActivate, this};
+        results->___didDeactivateEvent += DelegateW{&MenuController::OnResultsDeactivate, this};
+        multiResults->___didActivateEvent += DelegateW{&MenuController::OnResultsActivate, this};
+        multiResults->___didDeactivateEvent += DelegateW{&MenuController::OnResultsDeactivate, this};
     }
 
     void MenuController::OnResultsActivate(bool one, bool two, bool three)
@@ -40,9 +37,9 @@ namespace SliceDetails
     void MenuController::Dispose()
     {
         getLogger().debug("Disposing Menu Controller");
-        results->___didActivateEvent -= onResultsActivate;
-        results->___didDeactivateEvent -= onResultsDeactivate;
-        multiResults->___didActivateEvent -= onResultsActivate;
-        multiResults->___didDeactivateEvent -= onResultsDeactivate;
+        results->___didActivateEvent -= DelegateW{&MenuController::OnResultsActivate, this};
+        results->___didDeactivateEvent -= DelegateW{&MenuController::OnResultsDeactivate, this};
+        multiResults->___didActivateEvent -= DelegateW{&MenuController::OnResultsActivate, this};
+        multiResults->___didDeactivateEvent -= DelegateW{&MenuController::OnResultsDeactivate, this};
     }
 }

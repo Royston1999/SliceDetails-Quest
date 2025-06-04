@@ -1,7 +1,5 @@
 #pragma once
 
-#include "System/IDisposable.hpp"
-#include "Zenject/IInitializable.hpp"
 #include "custom-types/shared/macros.hpp"
 #include "lapiz/shared/macros.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
@@ -18,7 +16,7 @@
 #include "HMUI/StackLayoutGroup.hpp"
 #include "System/Object.hpp"
 
-DECLARE_CLASS_CODEGEN(SliceDetails, PanelUI, System::Object,
+DECLARE_CLASS_CODEGEN(SliceDetails, PanelUI, System::Object) {
 
     DECLARE_CTOR(ctor, int index);
     DECLARE_INSTANCE_METHOD(void, PostParse);
@@ -31,4 +29,4 @@ DECLARE_CLASS_CODEGEN(SliceDetails, PanelUI, System::Object,
     UnityEngine::BoxCollider* collider; // might not be needed
     std::string hoverText;
     int index;
-)
+};

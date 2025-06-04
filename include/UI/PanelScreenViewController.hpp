@@ -1,7 +1,5 @@
 #pragma once
 
-#include "System/IDisposable.hpp"
-#include "Zenject/IInitializable.hpp"
 #include "custom-types/shared/macros.hpp"
 #include "lapiz/shared/macros.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
@@ -12,13 +10,13 @@
 #include "UI/NoteUIModal.hpp"
 #include "UI/PanelUI.hpp"
 
-DECLARE_CLASS_CODEGEN(SliceDetails, PanelScreenViewController, HMUI::ViewController,
+DECLARE_CLASS_CODEGEN(SliceDetails, PanelScreenViewController, HMUI::ViewController) {
 
-    DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::HMUI::ViewController::DidActivate>::methodInfo(), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
+    DECLARE_OVERRIDE_METHOD_MATCH(void, DidActivate, &::HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
 
     DECLARE_INSTANCE_FIELD(NoteUIModal*, noteUIModal);
     DECLARE_INSTANCE_FIELD(BSML::FloatingScreen*, floatingScreen);
 
     public:
     SliceDetails::PanelUI* panelImages[12];
-)
+};
