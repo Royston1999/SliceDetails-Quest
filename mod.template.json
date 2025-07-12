@@ -5,11 +5,13 @@
   "author": "Polly51104",
   "version": "${version}",
   "packageId": "com.beatgames.beatsaber",
-  "packageVersion": "1.40.6_6407",
+  "packageVersion": "1.40.7_7060",
   "coverImage": "Cover.jpg",
   "description": "View extra information about your swings",
   "dependencies": [],
-  "lateModFiles": ["${binary}"],
+  "lateModFiles": [
+    "${binary}"
+  ],
   "libraryFiles": [],
   "fileCopies": [],
   "copyExtensions": []
