@@ -45,7 +45,7 @@ namespace SliceDetails
 
     VRUIControls::VRPointer* GetVRPointer() {
         static SafePtrUnity<VRUIControls::VRPointer> pointer;
-        if (pointer && pointer->get_enabled()) return pointer.ptr();
+        if (pointer && pointer->get_isActiveAndEnabled()) return pointer.ptr();
         auto currentEventSystem = UnityEngine::EventSystems::EventSystem::get_current();
         if (!currentEventSystem) return nullptr;
         auto vrInputModule = currentEventSystem->get_currentInputModule().try_cast<VRUIControls::VRInputModule>().value_or(nullptr);
